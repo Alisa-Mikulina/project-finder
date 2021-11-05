@@ -2,8 +2,8 @@
 
 ## Как начать работать над репозиторием
 
-1. Клонируем репозиторий `git clone git@gitlab.com:project-finder-team/project-finder-backend.git`
-2. Создаем отдельную ветку с фичей, над которой будем работать `git checkout -b <branch-name>`
+1. Склонировать репозиторий `git clone git@gitlab.com:project-finder-team/project-finder-backend.git`
+2. Создать отдельную ветку с фичей, над которой будем работать `git checkout -b <branch-name>`
 3. Создать файл `.env` и прописать необходимые аргументы
 
 ```bash

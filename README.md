@@ -11,6 +11,12 @@
 HOST=127.0.0.1
 PORT=3000
 TYPE=DEVELOPMENT
+ACCESS_TOKEN_EXP=30
+REFRESH_TOKEN_EXP=24
+ACCESS_TOKEN_SECRET=YOUR_SECRET_KEY
+REFRESH_TOKEN_SECRET=YOUR_SECRET_KEY
+MONGO_URL=mongodb+srv://<user_name>:<password>@main.z1hfb.mongodb.net
+JWT_TOKEN_PREFIX=Bearer
 ```
 
 4. Создать виртуальное окружение `python3 -m venv env`

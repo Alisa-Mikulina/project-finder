@@ -17,6 +17,7 @@ ACCESS_TOKEN_SECRET=YOUR_SECRET_KEY
 REFRESH_TOKEN_SECRET=YOUR_SECRET_KEY
 MONGO_URL=mongodb+srv://<user_name>:<password>@main.z1hfb.mongodb.net
 JWT_TOKEN_PREFIX=Bearer
+JWT_MAX_TOKENS=5
 ```
 
 4. Создать виртуальное окружение `python3 -m venv env`

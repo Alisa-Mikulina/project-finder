@@ -8,6 +8,7 @@ import uvicorn
 from db.mongodb import closeMongoConnection, connectToMongo
 from models.UserModel import UserInDB
 from routers.UserRouter import userRouter
+from routers.AuthRouter import authRouter
 
 app = FastAPI()
 
@@ -23,7 +24,8 @@ app.add_middleware(
 app.add_event_handler("startup", connectToMongo)
 app.add_event_handler("shutdown", closeMongoConnection)
 
-app.include_router(userRouter, prefix='/user')
+app.include_router(userRouter, prefix='/api')
+app.include_router(authRouter, prefix='/api')
 
 @app.get('/test')
 async def test_url():
@@ -31,7 +33,6 @@ async def test_url():
 
 @app.get('/test_token')
 async def text_token(user: UserInDB = Depends(getAuthorizedUser)):
-	print(user)
 	return {'ok': 'works'}
 
 if (__name__ == '__main__'):

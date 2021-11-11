@@ -1,3 +1,4 @@
+from typing import Optional
 from bson import ObjectId
 from pydantic import BaseModel, Field, BaseConfig
 
@@ -17,9 +18,9 @@ class PyObjectId(ObjectId):
 		field_schema.update(type="string")
 
 class BaseModelWithId(BaseModel):
-	_id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+	id: Optional[PyObjectId] = Field(alias='_id')
 
-class BaseModelWithIdConfig(BaseConfig):
+class BaseModelWithIdConfig:
 	allow_population_by_field_name = True
 	arbitrary_types_allowed = True
 	json_encoders = {ObjectId: str}

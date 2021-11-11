@@ -1,5 +1,5 @@
 from pymongo.database import Database
-from core.config import ACCESS_TOKEN_EXP, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_EXP
+from core.config import ACCESS_TOKEN_EXP, ACCESS_TOKEN_SECRET, JWT_MAX_TOKENS, REFRESH_TOKEN_EXP
 from models.TokenModel import RefreshTokenInDB
 from models.UserModel import UserInDB
 from jose import JWTError, jwt
@@ -24,7 +24,7 @@ def generateToken(db: Database, user: UserInDB, fingerPrint: str) -> str:
 
 	db.refreshTokens.delete_one({'fingerPrint': fingerPrint})
 	userTokens = list(db.refreshTokens.find({'user_id': str(user.id)}))
-	if len(userTokens) == 2:
+	if len(userTokens) >= int(JWT_MAX_TOKENS):
 		db.refreshTokens.delete_many({'user_id': str(user.id)})
 	db.refreshTokens.insert_one(refreshTokenInDB.dict())
 	return [accessToken, refreshTokenInDB.refreshToken, refreshTokenExpires]

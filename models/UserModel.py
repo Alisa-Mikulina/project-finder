@@ -35,6 +35,7 @@ class UserInDB(BaseModelWithId, UserBase):
 	contact: str = Field(default='')
 	information: str = Field(default='')
 	passwordHash: str = Field(default='')
+	avatarUrl: str = Field(default='')
 
 	class Config(BaseModelWithIdConfig):
 		schema_extra = {

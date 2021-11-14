@@ -2,12 +2,12 @@ from typing import Optional
 from fastapi import APIRouter, status, HTTPException, Depends, Body, Response, Cookie
 from pymongo.database import Database
 from controllers.TokenController import deleteRefreshTokenByUUID, generateToken, getRefreshTokenByUUID
-from controllers.UserController import checkPasswordHash, createUser, getUserById, getUserByUsername
+from controllers.UserController import checkPasswordHash, getUserById, getUserByUsername
 from db.mongodb import getDatabase
-from models.TokenModel import RefreshTokenInDB, RefreshTokenReq
+from models.TokenModel import RefreshTokenReq
 from datetime import datetime, timedelta
 
-from models.UserModel import UserLoginReq, UserRegisterReq
+from models.UserModel import UserLoginReq
 
 authRouter = APIRouter(prefix='/auth', tags=['auth'])
 

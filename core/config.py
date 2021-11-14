@@ -9,6 +9,8 @@ pwdContext = CryptContext(schemes=["bcrypt"], deprecated="auto")
 passwordUppercaseAlth = set(string.ascii_uppercase)
 passwordDigits = set(string.digits)
 
+allowdImageExtensions = set(('png', 'jpg', 'jpeg'))
+
 HOST = os.getenv('HOST')
 PORT = int(os.getenv('PORT'))
 DEV = os.getenv('TYPE') != 'PRODUCTION'

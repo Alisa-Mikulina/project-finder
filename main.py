@@ -3,6 +3,7 @@ from fastapi.param_functions import Depends
 from controllers.TokenController import getAuthorizedUser
 from core.config import HOST, PORT, DEV
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 import uvicorn
 
 from db.mongodb import closeMongoConnection, connectToMongo
@@ -23,6 +24,8 @@ app.add_middleware(
 
 app.add_event_handler("startup", connectToMongo)
 app.add_event_handler("shutdown", closeMongoConnection)
+
+app.mount('/media', StaticFiles(directory="media"), name="media")
 
 app.include_router(userRouter, prefix='/api')
 app.include_router(authRouter, prefix='/api')

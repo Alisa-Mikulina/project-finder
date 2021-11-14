@@ -14,7 +14,7 @@ authRouter = APIRouter(prefix='/auth', tags=['auth'])
 @authRouter.post('/login', status_code=status.HTTP_200_OK)
 async def login(response: Response, user: UserLoginReq = Body(...), db: Database = Depends(getDatabase)):
 	userInDB = getUserByUsername(db, user.username)
-	if not userInDB or not checkPasswordHash(user.password, userInDB.password_hash):
+	if not userInDB or not checkPasswordHash(user.password, userInDB.passwordHash):
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Invalid username or password')
 	accessToken, refreshToken, refreshTokenExpires = generateToken(db, userInDB, user.fingerPrint)
 

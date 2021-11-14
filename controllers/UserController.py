@@ -16,7 +16,7 @@ def getUserById(db: Database, user_id: str) -> UserInDB:
 
 def createUser(db: Database, user: UserRegisterReq):
 	hashedPassword = generatePasswordHash(user.password)
-	newUser = UserInDB(**{**user.dict(), 'password_hash': hashedPassword})
+	newUser = UserInDB(**{**user.dict(), 'passwordHash': hashedPassword})
 	db.users.insert_one(newUser.dict())
 
 def generatePasswordHash(password: str):

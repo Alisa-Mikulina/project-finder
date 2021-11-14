@@ -1,10 +1,13 @@
 from dotenv import load_dotenv
 from passlib.context import CryptContext
 import os
+import string
 
 load_dotenv()
 
 pwdContext = CryptContext(schemes=["bcrypt"], deprecated="auto")
+passwordUppercaseAlth = set(string.ascii_uppercase)
+passwordDigits = set(string.digits)
 
 HOST = os.getenv('HOST')
 PORT = int(os.getenv('PORT'))

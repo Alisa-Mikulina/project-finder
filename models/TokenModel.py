@@ -13,4 +13,4 @@ class RefreshTokenInDB(BaseModelWithId):
 	fingerPrint: str = Field(...)
 
 	class Config(BaseModelWithIdConfig):
-		schema_extra = {"example": {"username": "My goodName", "password_hash": "adhahduad123u1"}}
+		schema_extra = {"example": {"username": "My goodName", "passwordHash": "adhahduad123u1"}}

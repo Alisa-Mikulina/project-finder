@@ -37,7 +37,7 @@ def getRefreshTokenByUUID(refreshToken: str, db: Database = Depends(getDatabase)
 def deleteRefreshTokenByUUID(refreshToken: str, db: Database = Depends(getDatabase)):
 	db.refreshTokens.delete_one({'refreshToken': refreshToken})
 
-def getAuthorizedUser(db: Database = Depends(getDatabase), authorization: str = Header(...)):
+async def getAuthorizedUser(db: Database = Depends(getDatabase), authorization: str = Header(...)):
 	credentialsException = HTTPException(
 	    status_code=status.HTTP_401_UNAUTHORIZED,
 	    detail="Could not validate credentials",

@@ -13,7 +13,7 @@ async def getDatabase() -> Database:
 
 async def connectToMongo():
 	global client
-	client = MongoClient(MONGO_URL, serverSelectionTimeoutMS=1000)
+	client = MongoClient(MONGO_URL, serverSelectionTimeoutMS=10000)
 	try:
 		client.admin.command('ping')
 	except pymongo.errors.ConnectionFailure:

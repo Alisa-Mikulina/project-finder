@@ -29,5 +29,5 @@ JWT_MAX_TOKENS=5
 
 ```shell
 $ curl 127.0.0.1:3000/test
-{"ok":"works"}
+{'ok':'works'}
 ```

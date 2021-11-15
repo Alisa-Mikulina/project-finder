@@ -16,16 +16,16 @@ def generateToken(db: Database, user: UserInDB, fingerPrint: str) -> str:
 	refreshTokenExpires = datetime.utcnow() + timedelta(hours=int(REFRESH_TOKEN_EXP))
 	refreshTokenInDB = RefreshTokenInDB(
 	    **{
-	        'user_id': str(user.id),
+	        'userId': str(user.id),
 	        'refreshToken': uuid4().hex,
 	        'expires': int(refreshTokenExpires.timestamp()),
 	        'fingerPrint': fingerPrint
 	    })
 
 	db.refreshTokens.delete_one({'fingerPrint': fingerPrint})
-	userTokens = list(db.refreshTokens.find({'user_id': str(user.id)}))
+	userTokens = list(db.refreshTokens.find({'userId': str(user.id)}))
 	if len(userTokens) >= int(JWT_MAX_TOKENS):
-		db.refreshTokens.delete_many({'user_id': str(user.id)})
+		db.refreshTokens.delete_many({'userId': str(user.id)})
 	db.refreshTokens.insert_one(refreshTokenInDB.dict())
 	return [accessToken, refreshTokenInDB.refreshToken, refreshTokenExpires]
 
@@ -40,11 +40,11 @@ def deleteRefreshTokenByUUID(refreshToken: str, db: Database = Depends(getDataba
 async def getAuthorizedUser(db: Database = Depends(getDatabase), authorization: str = Header(...)):
 	credentialsException = HTTPException(
 	    status_code=status.HTTP_401_UNAUTHORIZED,
-	    detail="Could not validate credentials",
-	    headers={"WWW-Authenticate": "Bearer"},
+	    detail='Could not validate credentials',
+	    headers={'WWW-Authenticate': 'Bearer'},
 	)
 	try:
-		tokenPrefix, accessToken = authorization.split(" ")
+		tokenPrefix, accessToken = authorization.split(' ')
 		if tokenPrefix != JWT_TOKEN_PREFIX:
 			raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Invalid authorization type')
 	except:

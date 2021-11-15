@@ -6,7 +6,7 @@ import json
 
 load_dotenv()
 
-pwdContext = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwdContext = CryptContext(schemes=['bcrypt'], deprecated='auto')
 passwordUppercaseAlth = set(string.ascii_uppercase)
 passwordDigits = set(string.digits)
 

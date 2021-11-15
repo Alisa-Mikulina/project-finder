@@ -1,5 +1,4 @@
 from pymongo.database import Database
-import json
 from models.SkillTagModel import SkillTagInDB
 from core.config import skillTagsJson
 

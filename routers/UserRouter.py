@@ -1,10 +1,12 @@
+from typing import List
 from fastapi import APIRouter, status, HTTPException, Depends, Body, UploadFile
 from pymongo.database import Database
+from controllers.ProjectController import getProjectBySlug
 from controllers.TokenController import getAuthorizedUser
-from controllers.UserController import createUser, getUserByUsername, removeUserAvatar, setUserAvatar
+from controllers.UserController import createUser, getUserByUsername, getUsersBySkillTags, removeUserAvatar, setUserAvatar
 from core.utils import getImageFile
 from db.mongodb import getDatabase
-from models.UserModel import UserInDB, UserRegisterReq, UserRegisterRes
+from models.UserModel import UserBaseExtended, UserInDB, UserListSuitableReq, UserRegisterReq, UserRegisterRes
 from datetime import datetime
 from hashlib import sha256
 
@@ -17,6 +19,17 @@ async def register(user: UserRegisterReq = Body(...), db: Database = Depends(get
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='User already exists')
 	createUser(db, user)
 	return getUserByUsername(db, user.username)
+
+@userRouter.post('/list_suitable', status_code=status.HTTP_200_OK, response_model=List[UserBaseExtended])
+def list_suitable(project: UserListSuitableReq = Body(...),
+                  user: UserInDB = Depends(getAuthorizedUser),
+                  db: Database = Depends(getDatabase)):
+	project = getProjectBySlug(db, project.slug)
+	if not project:
+		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Project not found')
+	projectSkillTags = list(map(lambda ob: ob['name'], project.dict()['skillTags']))
+	suitableUsers = getUsersBySkillTags(db, projectSkillTags)
+	return suitableUsers
 
 @userRouter.post('/avatar', status_code=status.HTTP_200_OK)
 async def changeAvatar(user: UserInDB = Depends(getAuthorizedUser),

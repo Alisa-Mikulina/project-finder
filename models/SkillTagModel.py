@@ -13,4 +13,4 @@ class SkillTagBase(BaseModel):
 
 class SkillTagInDB(BaseModelWithId, SkillTagBase):
 	class Config(BaseModelWithIdConfig):
-		schema_extra = {"example": {"name": "ReacJS"}}
+		schema_extra = {'example': {'name': 'ReacJS'}}

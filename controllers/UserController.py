@@ -1,3 +1,4 @@
+from typing import List
 from bson.objectid import ObjectId
 from pymongo.database import Database
 from core.config import pwdContext
@@ -11,10 +12,14 @@ def getUserByUsername(db: Database, username: str) -> UserInDB:
 	if user:
 		return UserInDB(**user)
 
-def getUserById(db: Database, user_id: str) -> UserInDB:
-	user = db.users.find_one({'_id': ObjectId(user_id)})
+def getUserById(db: Database, userId: str) -> UserInDB:
+	user = db.users.find_one({'_id': ObjectId(userId)})
 	if user:
 		return UserInDB(**user)
+
+def getUsersBySkillTags(db: Database, skillTags: List[str]):
+	users = db.users.find({'skillTags.name': {'$in': skillTags}})
+	return list(map(lambda ob: UserInDB(**ob), users))
 
 def createUser(db: Database, user: UserRegisterReq):
 	hashedPassword = generatePasswordHash(user.password)

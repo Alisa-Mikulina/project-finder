@@ -7,10 +7,10 @@ class RefreshTokenReq(BaseModel):
 	refreshToken: Optional[str]
 
 class RefreshTokenInDB(BaseModelWithId):
-	user_id: str = Field(...)
+	userId: str = Field(...)
 	refreshToken: str = Field(...)
 	expires: int = Field(...)
 	fingerPrint: str = Field(...)
 
 	class Config(BaseModelWithIdConfig):
-		schema_extra = {"example": {"username": "My goodName", "passwordHash": "adhahduad123u1"}}
+		schema_extra = {'example': {'username': 'My goodName', 'passwordHash': 'adhahduad123u1'}}

@@ -2,12 +2,15 @@ from dotenv import load_dotenv
 from passlib.context import CryptContext
 import os
 import string
+import json
 
 load_dotenv()
 
-pwdContext = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwdContext = CryptContext(schemes=['bcrypt'], deprecated='auto')
 passwordUppercaseAlth = set(string.ascii_uppercase)
 passwordDigits = set(string.digits)
+
+skillTagsJson = json.loads(open('./skillTags.json').read())
 
 allowdImageExtensions = set(('png', 'jpg', 'jpeg'))
 

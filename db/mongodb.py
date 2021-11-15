@@ -2,6 +2,7 @@ from copy import Error
 from pymongo import MongoClient
 import pymongo
 from pymongo.database import Database
+from controllers.SkillTagController import checkSkillTagsInDB
 from core.config import MONGO_URL
 
 client = None
@@ -18,6 +19,7 @@ async def connectToMongo():
 	except pymongo.errors.ConnectionFailure:
 		print('Bad connecton to server')
 		raise Error
+	checkSkillTagsInDB(await getDatabase())
 
 async def closeMongoConnection():
 	global client

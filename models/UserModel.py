@@ -1,10 +1,18 @@
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel, Field, validator
 from core.config import passwordUppercaseAlth, passwordDigits
 from models.BaseModel import BaseModelWithId, BaseModelWithIdConfig
+from models.SkillTagModel import SkillTagBase
 
 class UserBase(BaseModel):
 	username: str = Field(min_length=8, max_length=50)
+
+class UserBaseExtended(UserBase):
+	name: str = Field(min_length=1, max_length=50)
+	lastname: str = Field(min_length=1, max_length=50)
+	contact: str = Field(min_length=3, max_length=50)
+	information: str = Field(min_length=20, max_length=500)
+	skillTags: Optional[List[SkillTagBase]] = []
 
 class UserPasswordWithValidator(BaseModel):
 	password: str = Field(min_length=8, max_length=50)
@@ -23,18 +31,13 @@ class UserLoginReq(UserBase, UserPasswordWithValidator):
 class UserLoginRes(BaseModel):
 	token: str = Field(...)
 
-class UserRegisterReq(UserBase, UserPasswordWithValidator):
-	name: str = Field(min_length=1, max_length=50)
-	lastname: str = Field(min_length=1, max_length=50)
-	contact: str = Field(min_length=3, max_length=50)
-	information: str = Field(min_length=20, max_length=500)
+class UserRegisterReq(UserBaseExtended, UserPasswordWithValidator):
+	pass
 
-class UserInDB(BaseModelWithId, UserBase):
-	name: str = Field(default='')
-	lastname: str = Field(default='')
-	contact: str = Field(default='')
-	information: str = Field(default='')
-	passwordHash: str = Field(default='')
+class UserRegisterRes(UserBaseExtended):
+	avatarUrl: str = Field(default='')
+
+class UserInDB(BaseModelWithId, UserBaseExtended):
 	avatarUrl: str = Field(default='')
 
 	class Config(BaseModelWithIdConfig):
@@ -44,6 +47,7 @@ class UserInDB(BaseModelWithId, UserBase):
 		        "name": "MyName",
 		        "lastname": "MyLastname",
 		        "contact": "MyContact",
-		        "passwordHash": "adhahduad123u1"
+		        "passwordHash": "adhahduad123u1",
+		        "avatarUrl": "/media/avatars/akdlakldklakl.jpeg"
 		    }
 		}

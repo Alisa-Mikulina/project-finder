@@ -1,5 +1,7 @@
 from fastapi import Header, UploadFile, File, HTTPException, status
+from pymongo.database import Database
 from core.config import allowdImageExtensions
+import json
 
 async def getImageFile(file: UploadFile = File(...), content_length: int = Header(..., le=1024**2)):
 	fileExtension = file.filename.split('.')[-1]

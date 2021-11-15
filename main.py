@@ -10,6 +10,7 @@ from db.mongodb import closeMongoConnection, connectToMongo
 from models.UserModel import UserInDB
 from routers.UserRouter import userRouter
 from routers.AuthRouter import authRouter
+from routers.SkillTagRouter import skillTagRouter
 
 app = FastAPI()
 
@@ -29,6 +30,7 @@ app.mount('/media', StaticFiles(directory="media"), name="media")
 
 app.include_router(userRouter, prefix='/api')
 app.include_router(authRouter, prefix='/api')
+app.include_router(skillTagRouter, prefix='/api')
 
 @app.get('/test')
 async def test_url():

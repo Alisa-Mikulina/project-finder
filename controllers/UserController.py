@@ -42,3 +42,8 @@ async def removeUserAvatar(db: Database, user: UserInDB):
 	if user.avatarUrl:
 		db.users.find_one_and_update({'_id': user.id}, {'$set': {'avatarUrl': ''}})
 		await aiofiles.os.remove(f'.{user.avatarUrl}')
+
+def getUserInformation(db: Database, user: UserInDB):
+	return db.users.find_one({"_id": user.id})
+
+# def changeUserInformation(db: Database, user: UserInDB, newUserInformation:)

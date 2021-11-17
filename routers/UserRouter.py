@@ -3,7 +3,7 @@ from fastapi import APIRouter, status, HTTPException, Depends, Body, UploadFile
 from pymongo.database import Database
 from controllers.ProjectController import getProjectBySlug
 from controllers.TokenController import getAuthorizedUser
-from controllers.UserController import createUser, getUserByUsername, getUsersBySkillTags, removeUserAvatar, setUserAvatar
+from controllers.UserController import createUser, getUserByUsername, getUsersBySkillTags, removeUserAvatar, setUserAvatar, getUserInformation
 from core.utils import getImageFile
 from db.mongodb import getDatabase
 from models.UserModel import UserBaseExtended, UserInDB, UserListSuitableReq, UserRegisterReq, UserRegisterRes
@@ -45,3 +45,15 @@ async def changeAvatar(user: UserInDB = Depends(getAuthorizedUser),
 		await removeUserAvatar(db, user)
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Something went wrong')
 	return {'avatarUrl': f'/media/avatars/{fileName}'}
+
+@userRouter.get('/me', status_code=status.HTTP_200_OK)
+def displayUserInformation(user: UserInDB = Depends(getAuthorizedUser),
+						   db: Database = Depends(getDatabase)):
+	currentUserInformation = getUserInformation(db, user)
+	if not currentUserInformation:
+		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='User not found')
+	return currentUserInformation
+
+# @userRouter.post('/me', status_code=status.HTTP_200_OK)
+# def editUserInformation(user: UserInDB = Depends(getAuthorizedUser),
+# 						db: Database = Depends(getDatabase)):

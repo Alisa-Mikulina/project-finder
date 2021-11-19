@@ -11,8 +11,18 @@ class ProjectBase(BaseModel):
 	slug: str = Field(min_length=3, max_length=35)
 	user: UserBaseExtended
 
+class ProjectBaseWithoutUser(BaseModel):
+	title: str = Field(min_length=3, max_length=35)
+	description: str = Field(min_length=20, max_length=500)
+	skillTags: List[SkillTagBase] = Field(min_items=1)
+	slug: str = Field(min_length=3, max_length=35)
+
 class ProjectCreateReq(BaseModel):
 	title: str = Field(min_length=3, max_length=35)
+	description: str = Field(min_length=20, max_length=500)
+	skillTags: List[SkillTagBase] = Field(min_items=1)
+
+class ProjectChangeReq(BaseModel):
 	description: str = Field(min_length=20, max_length=500)
 	skillTags: List[SkillTagBase] = Field(min_items=1)
 

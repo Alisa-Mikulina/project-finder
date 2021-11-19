@@ -9,5 +9,5 @@ async def getImageFile(file: UploadFile = File(...), content_length: int = Heade
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='File is not an image')
 	return file
 
-def slugifyString(strToSlugify: str):
-	return slugify(strToSlugify, lowercase=True, separator='_')
+def slugifyString(strToSlugify: str, lowercase: bool):
+	return slugify(strToSlugify, lowercase=lowercase, separator='_')

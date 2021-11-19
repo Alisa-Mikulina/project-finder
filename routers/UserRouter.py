@@ -3,10 +3,10 @@ from fastapi import APIRouter, status, HTTPException, Depends, Body, UploadFile
 from pymongo.database import Database
 from controllers.ProjectController import getProjectBySlug
 from controllers.TokenController import getAuthorizedUser
-from controllers.UserController import createUser, getUserByUsername, getUsersBySkillTags, removeUserAvatar, setUserAvatar, getUserInformation
+from controllers.UserController import changeUser, createUser, getUserByUsername, getUsersBySkillTags, removeUserAvatar, setUserAvatar
 from core.utils import getImageFile
 from db.mongodb import getDatabase
-from models.UserModel import UserBaseExtended, UserInDB, UserListSuitableReq, UserRegisterReq, UserRegisterRes
+from models.UserModel import UserChangeReq, UserInDB, UserListSuitableReq, UserRegisterReq, UserRegisterRes
 from datetime import datetime
 from hashlib import sha256
 
@@ -20,10 +20,10 @@ async def register(user: UserRegisterReq = Body(...), db: Database = Depends(get
 	createUser(db, user)
 	return getUserByUsername(db, user.username)
 
-@userRouter.post('/list_suitable', status_code=status.HTTP_200_OK, response_model=List[UserBaseExtended])
-def list_suitable(project: UserListSuitableReq = Body(...),
-                  user: UserInDB = Depends(getAuthorizedUser),
-                  db: Database = Depends(getDatabase)):
+@userRouter.post('/list_suitable', status_code=status.HTTP_200_OK, response_model=List[UserRegisterRes])
+def listSuitable(project: UserListSuitableReq = Body(...),
+                 user: UserInDB = Depends(getAuthorizedUser),
+                 db: Database = Depends(getDatabase)):
 	project = getProjectBySlug(db, project.slug)
 	if not project:
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Project not found')
@@ -46,14 +46,20 @@ async def changeAvatar(user: UserInDB = Depends(getAuthorizedUser),
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Something went wrong')
 	return {'avatarUrl': f'/media/avatars/{fileName}'}
 
-@userRouter.get('/me', status_code=status.HTTP_200_OK)
-def displayUserInformation(user: UserInDB = Depends(getAuthorizedUser),
-						   db: Database = Depends(getDatabase)):
-	currentUserInformation = getUserInformation(db, user)
-	if not currentUserInformation:
-		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='User not found')
-	return currentUserInformation
+@userRouter.get('/me', status_code=status.HTTP_200_OK, response_model=UserRegisterRes)
+def selfInfo(user: UserInDB = Depends(getAuthorizedUser), db: Database = Depends(getDatabase)):
+	return user
 
-# @userRouter.post('/me', status_code=status.HTTP_200_OK)
-# def editUserInformation(user: UserInDB = Depends(getAuthorizedUser),
-# 						db: Database = Depends(getDatabase)):
+@userRouter.post('/me', status_code=status.HTTP_200_OK, response_model=UserRegisterRes)
+def setSelfInfo(userChange: UserChangeReq = Body(...),
+                user: UserInDB = Depends(getAuthorizedUser),
+                db: Database = Depends(getDatabase)):
+	changeUser(db, user.username, userChange)
+	return getUserByUsername(db, user.username)
+
+@userRouter.get('/{username}', status_code=status.HTTP_200_OK, response_model=UserRegisterRes)
+def getUser(username: str, user: UserInDB = Depends(getAuthorizedUser), db: Database = Depends(getDatabase)):
+	userProfile = getUserByUsername(db, username)
+	if not userProfile:
+		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='User not found')
+	return userProfile

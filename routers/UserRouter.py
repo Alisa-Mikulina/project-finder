@@ -47,18 +47,20 @@ async def changeAvatar(user: UserInDB = Depends(getAuthorizedUser),
 	return {'avatarUrl': f'/media/avatars/{fileName}'}
 
 @userRouter.get('/me', status_code=status.HTTP_200_OK, response_model=UserRegisterRes)
-def selfInfo(user: UserInDB = Depends(getAuthorizedUser), db: Database = Depends(getDatabase)):
+async def selfInfo(user: UserInDB = Depends(getAuthorizedUser), db: Database = Depends(getDatabase)):
 	return user
 
 @userRouter.post('/me', status_code=status.HTTP_200_OK, response_model=UserRegisterRes)
-def setSelfInfo(userChange: UserChangeReq = Body(...),
-                user: UserInDB = Depends(getAuthorizedUser),
-                db: Database = Depends(getDatabase)):
+async def setSelfInfo(userChange: UserChangeReq = Body(...),
+                      user: UserInDB = Depends(getAuthorizedUser),
+                      db: Database = Depends(getDatabase)):
 	changeUser(db, user.username, userChange)
 	return getUserByUsername(db, user.username)
 
 @userRouter.get('/{username}', status_code=status.HTTP_200_OK, response_model=UserRegisterRes)
-def getUser(username: str, user: UserInDB = Depends(getAuthorizedUser), db: Database = Depends(getDatabase)):
+async def getUser(username: str,
+                  user: UserInDB = Depends(getAuthorizedUser),
+                  db: Database = Depends(getDatabase)):
 	userProfile = getUserByUsername(db, username)
 	if not userProfile:
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='User not found')

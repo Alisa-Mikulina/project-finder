@@ -4,11 +4,12 @@ from models.TokenModel import RefreshTokenInDB
 from models.UserModel import UserInDB
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
-from fastapi import Depends, Header, HTTPException, status
+from fastapi import Depends, HTTPException, status, Security
 from db.mongodb import getDatabase
-from core.config import JWT_TOKEN_PREFIX
+from core.config import JWT_TOKEN_PREFIX, bearerSecurity
 from controllers.UserController import getUserByUsername
 from uuid import uuid4
+from fastapi.security import HTTPAuthorizationCredentials
 
 def generateToken(db: Database, user: UserInDB, fingerPrint: str) -> str:
 	payload = {'username': user.username, 'exp': datetime.utcnow() + timedelta(minutes=int(ACCESS_TOKEN_EXP))}
@@ -37,14 +38,18 @@ def getRefreshTokenByUUID(refreshToken: str, db: Database = Depends(getDatabase)
 def deleteRefreshTokenByUUID(refreshToken: str, db: Database = Depends(getDatabase)):
 	db.refreshTokens.delete_one({'refreshToken': refreshToken})
 
-async def getAuthorizedUser(db: Database = Depends(getDatabase), authorization: str = Header(...)):
+async def getAuthorizedUser(
+    authorization: HTTPAuthorizationCredentials = Security(bearerSecurity),
+    db: Database = Depends(getDatabase),
+):
 	credentialsException = HTTPException(
 	    status_code=status.HTTP_401_UNAUTHORIZED,
 	    detail='Could not validate credentials',
 	    headers={'WWW-Authenticate': 'Bearer'},
 	)
 	try:
-		tokenPrefix, accessToken = authorization.split(' ')
+		tokenPrefix = authorization.scheme
+		accessToken = authorization.credentials
 		if tokenPrefix != JWT_TOKEN_PREFIX:
 			raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Invalid authorization type')
 	except:

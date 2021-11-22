@@ -4,6 +4,8 @@ import os
 import string
 import json
 
+from fastapi.security import HTTPBearer
+
 load_dotenv()
 
 pwdContext = CryptContext(schemes=['bcrypt'], deprecated='auto')
@@ -13,6 +15,8 @@ passwordDigits = set(string.digits)
 skillTagsJson = json.loads(open('./skillTags.json').read())
 
 allowdImageExtensions = set(('png', 'jpg', 'jpeg'))
+
+bearerSecurity = HTTPBearer()
 
 HOST = os.getenv('HOST')
 PORT = int(os.getenv('PORT'))

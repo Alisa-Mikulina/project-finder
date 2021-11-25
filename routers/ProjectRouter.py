@@ -30,7 +30,7 @@ async def selfProjects(user: UserInDB = Depends(getAuthorizedUser), db: Database
 
 @projectRouter.get('/list_suitable', status_code=status.HTTP_200_OK, response_model=List[ProjectBase])
 async def listSuitable(user: UserInDB = Depends(getAuthorizedUser), db: Database = Depends(getDatabase)):
-	userSkillTags = list(map(lambda ob: ob['name'], user.dict()['skillTags']))
+	userSkillTags = list(map(lambda ob: ob['label'], user.dict()['skillTags']))
 	suitableProject = getProjectsBySkillTags(db, userSkillTags)
 	return suitableProject
 

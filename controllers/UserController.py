@@ -18,7 +18,7 @@ def getUserById(db: Database, userId: str):
 		return UserInDB(**user)
 
 def getUsersBySkillTags(db: Database, skillTags: List[str]):
-	users = db.users.find({'skillTags.name': {'$in': skillTags}})
+	users = db.users.find({'skillTags.label': {'$in': skillTags}})
 	return list(map(lambda ob: UserInDB(**ob), users))
 
 def createUser(db: Database, user: UserRegisterReq):
@@ -40,9 +40,9 @@ async def setUserAvatar(db: Database, user: UserInDB, avatarFile: UploadFile, fi
 	async with aiofiles.open(f'./media/avatars/{fileName}', 'wb') as outFile:
 		while content := await avatarFile.read(1024):
 			await outFile.write(content)
-	db.users.find_one_and_update({'_id': user.id}, {'$set': {'avatarUrl': f'/media/avatars/{fileName}'}})
+	db.users.find_one_and_update({'_id': user.id}, {'$set': {'coverUrl': f'/media/avatars/{fileName}'}})
 
 async def removeUserAvatar(db: Database, user: UserInDB):
-	if user.avatarUrl:
-		db.users.find_one_and_update({'_id': user.id}, {'$set': {'avatarUrl': ''}})
-		await aiofiles.os.remove(f'.{user.avatarUrl}')
+	if user.coverUrl:
+		db.users.find_one_and_update({'_id': user.id}, {'$set': {'coverUrl': ''}})
+		await aiofiles.os.remove(f'.{user.coverUrl}')

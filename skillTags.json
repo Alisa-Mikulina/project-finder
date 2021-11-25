@@ -1,8 +1,8 @@
 {
-  "ReactJS": { "name": "ReactJS" },
-  "Django": { "name": "Django" },
-  "Express": { "name": "Express" },
+  "ReactJS": { "label": "ReactJS" },
+  "Django": { "label": "Django" },
+  "Express": { "label": "Express" },
   "FastAPI": {
-    "name": "FastAPI"
+    "label": "FastAPI"
   }
 }

@@ -8,11 +8,11 @@ def checkSkillTagsInDB(db: Database):
 	skillTagsToAdd = []
 
 	for skillTag in skillTagsInDB:
-		skillTagsChecked[skillTag['name']] = True
+		skillTagsChecked[skillTag['label']] = True
 
 	for key in skillTagsChecked:
 		if not skillTagsChecked[key]:
-			skillTagsToAdd.append(SkillTagInDB(**{'name': key}).dict())
+			skillTagsToAdd.append(SkillTagInDB(**{'label': key}).dict())
 
 	if skillTagsToAdd:
 		db.skillTags.insert_many(skillTagsToAdd)

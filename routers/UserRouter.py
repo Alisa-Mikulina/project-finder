@@ -27,7 +27,7 @@ def listSuitable(project: UserListSuitableReq = Body(...),
 	project = getProjectBySlug(db, project.slug)
 	if not project:
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Project not found')
-	projectSkillTags = list(map(lambda ob: ob['name'], project.dict()['skillTags']))
+	projectSkillTags = list(map(lambda ob: ob['label'], project.dict()['skillTags']))
 	suitableUsers = getUsersBySkillTags(db, projectSkillTags)
 	return suitableUsers
 
@@ -44,7 +44,7 @@ async def changeAvatar(user: UserInDB = Depends(getAuthorizedUser),
 	except:
 		await removeUserAvatar(db, user)
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Something went wrong')
-	return {'avatarUrl': f'/media/avatars/{fileName}'}
+	return {'coverUrl': f'/media/avatars/{fileName}'}
 
 @userRouter.get('/me', status_code=status.HTTP_200_OK, response_model=UserRegisterRes)
 async def selfInfo(user: UserInDB = Depends(getAuthorizedUser), db: Database = Depends(getDatabase)):

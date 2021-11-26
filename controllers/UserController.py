@@ -17,8 +17,8 @@ def getUserById(db: Database, userId: str):
 	if user:
 		return UserInDB(**user)
 
-def getUsersBySkillTags(db: Database, skillTags: List[str]):
-	users = db.users.find({'skillTags.label': {'$in': skillTags}})
+def getUsersBySkillTags(db: Database, username: str, skillTags: List[str]):
+	users = db.users.find({'skillTags.label': {'$in': skillTags}, 'username': {'$ne': username}})
 	return list(map(lambda ob: UserInDB(**ob), users))
 
 def createUser(db: Database, user: UserRegisterReq):

@@ -4,6 +4,7 @@ from pymongo.database import Database
 from controllers.ProjectController import getProjectBySlug
 from controllers.TokenController import getAuthorizedUser
 from controllers.UserController import changeUser, createUser, getUserByUsername, getUsersBySkillTags, removeUserAvatar, setUserAvatar
+from core.errors import API_ERRORS
 from core.utils import getImageFile
 from db.mongodb import getDatabase
 from models.UserModel import UserChangeReq, UserInDB, UserListSuitableReq, UserRegisterReq, UserRegisterRes
@@ -16,7 +17,7 @@ userRouter = APIRouter(prefix='/user', tags=['user'])
 async def register(user: UserRegisterReq = Body(...), db: Database = Depends(getDatabase)):
 	predictUser = getUserByUsername(db, user.username)
 	if predictUser:
-		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='User already exists')
+		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=API_ERRORS['user.AlreadyExists'])
 	createUser(db, user)
 	return getUserByUsername(db, user.username)
 
@@ -26,9 +27,9 @@ def listSuitable(project: UserListSuitableReq = Body(...),
                  db: Database = Depends(getDatabase)):
 	project = getProjectBySlug(db, project.slug)
 	if not project:
-		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Project not found')
+		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=API_ERRORS['project.NotFound'])
 	projectSkillTags = list(map(lambda ob: ob['label'], project.dict()['skillTags']))
-	suitableUsers = getUsersBySkillTags(db, projectSkillTags)
+	suitableUsers = getUsersBySkillTags(db, user.username, projectSkillTags)
 	return suitableUsers
 
 @userRouter.post('/avatar', status_code=status.HTTP_200_OK)
@@ -63,5 +64,5 @@ async def getUser(username: str,
                   db: Database = Depends(getDatabase)):
 	userProfile = getUserByUsername(db, username)
 	if not userProfile:
-		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='User not found')
+		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=API_ERRORS['user.NotFound'])
 	return userProfile

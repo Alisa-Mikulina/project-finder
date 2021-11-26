@@ -1,5 +1,5 @@
-from typing import List, Optional
-from pydantic import BaseModel, Field, validator
+from typing import List
+from pydantic import BaseModel, Field
 from models.BaseModel import BaseModelWithId, BaseModelWithIdConfig
 from models.SkillTagModel import SkillTagBase
 from models.UserModel import UserBaseExtended, UserInDB

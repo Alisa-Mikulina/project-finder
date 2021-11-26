@@ -1,3 +1,4 @@
+from typing import List
 from pydantic import BaseModel, Field, validator
 from models.BaseModel import BaseModelWithId, BaseModelWithIdConfig
 from core.config import skillTagsJson

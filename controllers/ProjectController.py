@@ -20,6 +20,6 @@ def updateProject(db: Database, slug: str, projectChange: ProjectChangeReq):
 	project = db.projects.find_one_and_update({'slug': slug}, {'$set': projectChange.dict()})
 	return project
 
-def getProjectsBySkillTags(db: Database, skillTags: List[str]):
-	projects = db.projects.find({'skillTags.label': {'$in': skillTags}})
+def getProjectsBySkillTags(db: Database, username: str, skillTags: List[str]):
+	projects = db.projects.find({'skillTags.label': {'$in': skillTags}, 'user.username': {'$ne': username}})
 	return list(map(lambda ob: ProjectInDB(**ob), projects))

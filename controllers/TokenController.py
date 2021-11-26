@@ -1,5 +1,6 @@
 from pymongo.database import Database
 from core.config import ACCESS_TOKEN_EXP, ACCESS_TOKEN_SECRET, JWT_MAX_TOKENS, REFRESH_TOKEN_EXP
+from core.errors import API_ERRORS
 from models.TokenModel import RefreshTokenInDB
 from models.UserModel import UserInDB
 from jose import JWTError, jwt
@@ -44,16 +45,18 @@ async def getAuthorizedUser(
 ):
 	credentialsException = HTTPException(
 	    status_code=status.HTTP_401_UNAUTHORIZED,
-	    detail='Could not validate credentials',
+	    detail=API_ERRORS['auth.CredentialsValidationError'],
 	    headers={'WWW-Authenticate': 'Bearer'},
 	)
 	try:
 		tokenPrefix = authorization.scheme
 		accessToken = authorization.credentials
 		if tokenPrefix != JWT_TOKEN_PREFIX:
-			raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Invalid authorization type')
+			raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+			                    detail=API_ERRORS['auth.AuthorizationTypeError'])
 	except:
-		raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Invalid authorization type')
+		raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+		                    detail=API_ERRORS['auth.AuthorizationTypeError'])
 	try:
 		payload = jwt.decode(accessToken, ACCESS_TOKEN_SECRET, 'HS256')
 		username = payload['username']

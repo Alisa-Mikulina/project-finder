@@ -1,9 +1,12 @@
 from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
 from fastapi.param_functions import Depends
+from starlette.responses import JSONResponse
 from controllers.TokenController import getAuthorizedUser
 from core.config import HOST, PORT, DEV
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException as StarletteHTTPException
 import uvicorn
 
 from db.mongodb import closeMongoConnection, connectToMongo
@@ -28,6 +31,18 @@ app.add_event_handler('startup', connectToMongo)
 app.add_event_handler('shutdown', closeMongoConnection)
 
 app.mount('/media', StaticFiles(directory='media'), name='media')
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(req, exc):
+	return JSONResponse([exc.detail], status_code=exc.status_code)
+
+@app.exception_handler(RequestValidationError)
+async def http_validation_error_handler(req, exc):
+	return JSONResponse([{
+	    'errorCode': -1,
+	    'msg': f'{".".join(list(map(str,error["loc"])))}:{error["msg"]}'
+	} for error in exc.errors()],
+	                    status_code=422)
 
 app.include_router(userRouter, prefix='/api')
 app.include_router(authRouter, prefix='/api')

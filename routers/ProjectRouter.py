@@ -4,6 +4,7 @@ from pymongo.database import Database
 from pymongo.database import Database
 from controllers.ProjectController import createProject, getProjectBySlug, getProjectsBySkillTags, getSelfProjects, updateProject
 from controllers.TokenController import getAuthorizedUser
+from core.errors import API_ERRORS
 from core.utils import slugifyString
 from db.mongodb import getDatabase
 from models.ProjectModel import ProjectBase, ProjectBaseWithoutUser, ProjectChangeReq, ProjectCreateReq
@@ -18,8 +19,7 @@ async def create(project: ProjectCreateReq = Body(...),
 	slugTitle = slugifyString(project.title, True)
 	predictProject = getProjectBySlug(db, slugTitle)
 	if predictProject:
-		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-		                    detail='Project with this title already exists')
+		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=API_ERRORS['project.AlreadyExists'])
 	createProject(db, project, slugTitle, user)
 	return {**project.dict(), 'slug': slugTitle, 'user': user.dict()}
 
@@ -31,7 +31,7 @@ async def selfProjects(user: UserInDB = Depends(getAuthorizedUser), db: Database
 @projectRouter.get('/list_suitable', status_code=status.HTTP_200_OK, response_model=List[ProjectBase])
 async def listSuitable(user: UserInDB = Depends(getAuthorizedUser), db: Database = Depends(getDatabase)):
 	userSkillTags = list(map(lambda ob: ob['label'], user.dict()['skillTags']))
-	suitableProject = getProjectsBySkillTags(db, userSkillTags)
+	suitableProject = getProjectsBySkillTags(db, user.username, userSkillTags)
 	return suitableProject
 
 @projectRouter.get('/{slug}', status_code=status.HTTP_200_OK, response_model=ProjectBase)
@@ -40,7 +40,7 @@ async def getProject(slug: str,
                      db: Database = Depends(getDatabase)):
 	project = getProjectBySlug(db, slug)
 	if not project:
-		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Project not found')
+		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=API_ERRORS['project.NotFound'])
 	return project
 
 @projectRouter.post('/{slug}', status_code=status.HTTP_200_OK, response_model=ProjectBase)
@@ -50,8 +50,8 @@ async def changeProject(slug: str,
                         db: Database = Depends(getDatabase)):
 	project = getProjectBySlug(db, slug)
 	if not project:
-		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Project not found')
+		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=API_ERRORS['project.NotFound'])
 	if project.user.username != user.username:
-		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Don\'t have access to this project')
+		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=API_ERRORS['project.NoAccess'])
 	updateProject(db, slug, projectChange)
 	return getProjectBySlug(db, slug)

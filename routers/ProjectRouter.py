@@ -1,7 +1,6 @@
 from typing import List
 from fastapi import APIRouter, status, Depends, Body, HTTPException
 from pymongo.database import Database
-from pymongo.database import Database
 from controllers.ProjectController import createProject, getProjectBySlug, getProjectsBySkillTags, getSelfProjects, updateProject
 from controllers.TokenController import getAuthorizedUser
 from core.errors import API_ERRORS

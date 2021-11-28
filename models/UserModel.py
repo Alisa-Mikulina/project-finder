@@ -14,11 +14,18 @@ class UserBase(BaseModel):
 			raise ValueError('Wrong username format')
 		return username
 
+class UserContacts(BaseModel):
+	email: str = Field(default='', max_length=50)
+	telegram: str = Field(default='', max_length=50)
+	website: str = Field(default='', max_length=50)
+
 class UserBaseExtended(UserBase):
 	name: str = Field(min_length=1, max_length=50)
 	lastname: str = Field(min_length=1, max_length=50)
-	contact: str = Field(min_length=3, max_length=50)
-	information: str = Field(min_length=20, max_length=500)
+	gender: bool
+	birthDate: str
+	location: str
+	contact: UserContacts
 	skillTags: Optional[List[SkillTagBase]] = []
 
 class UserPasswordWithValidator(BaseModel):
@@ -41,16 +48,20 @@ class UserLoginRes(BaseModel):
 class UserRegisterReq(UserBaseExtended, UserPasswordWithValidator):
 	pass
 
-class UserChangeReq(BaseModel):
-	name: str = Field(min_length=1, max_length=50)
-	lastname: str = Field(min_length=1, max_length=50)
-	contact: str = Field(min_length=3, max_length=50)
-	information: str = Field(min_length=20, max_length=500)
-	skillTags: Optional[List[SkillTagBase]] = []
-
 class UserRegisterRes(UserBaseExtended):
 	avatarUrl: str = Field(default='')
 	coverUrl: str = Field(default='')
+	information: str = Field(default='', max_length=500)
+
+class UserChangeReq(BaseModel):
+	name: str = Field(min_length=1, max_length=50)
+	lastname: str = Field(min_length=1, max_length=50)
+	gender: bool
+	birthDate: str
+	location: str
+	contact: UserContacts
+	information: str = Field(max_length=500)
+	skillTags: Optional[List[SkillTagBase]] = []
 
 class UserListSuitableReq(BaseModel):
 	slug: str = Field(min_length=3, max_length=35)
@@ -59,6 +70,7 @@ class UserInDB(BaseModelWithId, UserBaseExtended):
 	avatarUrl: str = Field(default='')
 	coverUrl: str = Field(default='')
 	passwordHash: str = Field(default='')
+	information: str = Field(default='', max_length=500)
 
 	class Config(BaseModelWithIdConfig):
 		schema_extra = {

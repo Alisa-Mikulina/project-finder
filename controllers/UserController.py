@@ -23,6 +23,7 @@ def getUsersBySkillTags(db: Database, username: str, skillTags: List[str]):
 
 def createUser(db: Database, user: UserRegisterReq):
 	hashedPassword = generatePasswordHash(user.password)
+	print(user.dict())
 	newUser = UserInDB(**{**user.dict(), 'passwordHash': hashedPassword})
 	db.users.insert_one(newUser.dict())
 

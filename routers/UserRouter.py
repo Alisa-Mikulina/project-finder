@@ -3,15 +3,13 @@ from fastapi import APIRouter, status, HTTPException, Depends, Body, UploadFile,
 from pymongo.database import Database
 from controllers.ProjectController import getProjectBySlug
 from controllers.TokenController import getAuthorizedUser
-from controllers.UserController import changeUser, createUser, getUserByUsername, getUsersBySkillTags, removeUserAvatar, setUserAvatar
+from controllers.UserController import *
 from core.errors import API_ERRORS
 from controllers.UserController import checkPasswordHash
 from controllers.TokenController import generateToken
-from core.utils import getImageFile
 from db.mongodb import getDatabase
+from models.ProjectModel import UserListSuitableReq
 from models.UserModel import *
-from datetime import datetime
-from hashlib import sha256
 
 userRouter = APIRouter(prefix='/user', tags=['user'])
 
@@ -43,7 +41,7 @@ async def loginUserEP(response: Response, user: UserLoginReq = Body(...),
 	                    path='/api/auth')
 	return {'accessToken': accessToken, 'refreshToken': refreshToken}
 
-@userRouter.post('/list_suitable', status_code=status.HTTP_200_OK, response_model=List[UserRegisterRes])
+@userRouter.post('/list_suitable', status_code=status.HTTP_200_OK, response_model=List[UserListSuitableRes])
 def listSuitableEP(project: UserListSuitableReq = Body(...),
                    user: UserInDB = Depends(getAuthorizedUser),
                    db: Database = Depends(getDatabase)):

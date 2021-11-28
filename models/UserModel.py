@@ -1,11 +1,11 @@
 from typing import Optional
-from pydantic import BaseModel, Field, validator
+from pydantic import Field, validator
 from core.config import passwordUppercaseAlth, passwordDigits
 from core.utils import slugifyString
-from models.BaseModel import BaseModelWithId, BaseModelWithIdConfig
+from models.BaseModel import BaseModelWithId, BaseModelWithIdConfig, MyBaseModelWithExcAndInc
 from models.SkillTagModel import SkillTagList
 
-class UserUsername(BaseModel):
+class UserUsername(MyBaseModelWithExcAndInc):
 	username: str = Field(min_length=8, max_length=50)
 
 	@validator('username')
@@ -14,7 +14,7 @@ class UserUsername(BaseModel):
 			raise ValueError('Wrong username format')
 		return username
 
-class UserPassword(BaseModel):
+class UserPassword(MyBaseModelWithExcAndInc):
 	password: str = Field(min_length=8, max_length=50)
 
 	@validator('password')
@@ -25,7 +25,7 @@ class UserPassword(BaseModel):
 			raise ValueError('Password must contain digits')
 		return password
 
-class UserContacts(BaseModel):
+class UserContacts(MyBaseModelWithExcAndInc):
 	email: Optional[str] = Field(default='', max_length=50)
 	telegram: Optional[str] = Field(default='', max_length=50)
 	website: Optional[str] = Field(default='', max_length=50)
@@ -74,7 +74,7 @@ class UserInDB(BaseModelWithId, UserBase):
 class UserLoginReq(UserUsername, UserPassword):
 	fingerPrint: str = Field(...)
 
-class UserLoginRes(BaseModel):
+class UserLoginRes(MyBaseModelWithExcAndInc):
 	accessToken: str = Field(...)
 	refreshToken: str = Field(...)
 
@@ -104,6 +104,6 @@ class UserSelfChangeRes(UserBase):
 class UserInfoRes(UserBase):
 	pass
 
-# User List Suitable
-class UserListSuitableReq(BaseModel):
-	slug: str = Field(min_length=3, max_length=35)
+# User List Suitable POST (/api/user/list_suitable)
+class UserListSuitableRes(UserBase):
+	pass

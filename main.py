@@ -10,7 +10,6 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 import uvicorn
 
 from db.mongodb import closeMongoConnection, connectToMongo
-from models.BaseModel import TestModel2
 from models.UserModel import UserInDB
 from routers.UserRouter import userRouter
 from routers.AuthRouter import authRouter
@@ -50,9 +49,8 @@ app.include_router(authRouter, prefix='/api')
 app.include_router(skillTagRouter, prefix='/api')
 app.include_router(projectRouter, prefix='/api')
 
-@app.post('/test')
-async def test_url(my_data: TestModel2 = Body(...)):
-	print(my_data)
+@app.get('/test')
+async def test_url():
 	return {'ok': 'works'}
 
 @app.get('/test_token')

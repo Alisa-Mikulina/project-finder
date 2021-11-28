@@ -1,7 +1,4 @@
-from typing import List
-from fastapi import APIRouter, status, Depends
-from pymongo.database import Database
-from db.mongodb import getDatabase
+from fastapi import APIRouter, status
 from models.SkillTagModel import *
 
 skillTagRouter = APIRouter(prefix='/skill_tag', tags=['skill_tag'])

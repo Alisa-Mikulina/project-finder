@@ -1,11 +1,12 @@
 from typing import List, Optional
 from fastapi.exceptions import HTTPException
-from pydantic import BaseModel, Field, validator
+from pydantic import Field, validator
 from starlette import status
 from core.config import skillTagsJson
 from core.errors import API_ERRORS
+from models.BaseModel import MyBaseModelWithExcAndInc
 
-class SkillTagBase(BaseModel):
+class SkillTagBase(MyBaseModelWithExcAndInc):
 	label: str = Field(min_length=3, max_length=20)
 
 	@validator('label')
@@ -14,7 +15,7 @@ class SkillTagBase(BaseModel):
 			raise ValueError('Skill label is not allowed')
 		return label
 
-class SkillTagList(BaseModel):
+class SkillTagList(MyBaseModelWithExcAndInc):
 	skillTags: Optional[List[SkillTagBase]] = Field(default=[])
 
 	@validator('skillTags')

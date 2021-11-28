@@ -28,7 +28,9 @@ async def listMyProjectsEP(user: UserInDB = Depends(getAuthorizedUser), db: Data
 	projects = getSelfProjects(db, user.username)
 	return projects
 
-@projectRouter.get('/list_suitable', status_code=status.HTTP_200_OK, response_model=List[ProjectBase])
+@projectRouter.get('/list_suitable',
+                   status_code=status.HTTP_200_OK,
+                   response_model=List[ProjectListSuitableRes])
 async def listSuitableEP(user: UserInDB = Depends(getAuthorizedUser), db: Database = Depends(getDatabase)):
 	userSkillTags = list(map(lambda ob: ob['label'], user.dict()['skillTags']))
 	suitableProject = getProjectsBySkillTags(db, user.username, userSkillTags)

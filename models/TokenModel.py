@@ -1,7 +1,7 @@
 from typing import Optional
-from pydantic import Field, BaseModel
-from models.BaseModel import BaseModelWithId, BaseModelWithIdConfig
+from pydantic import Field
 from models.UserModel import UserUsername
+from models.BaseModel import BaseModelWithId, BaseModelWithIdConfig, MyBaseModelWithExcAndInc
 
 class RefreshTokenBase(UserUsername):
 	refreshToken: str = Field(...)
@@ -15,11 +15,11 @@ class RefreshTokenRefreshReq(RefreshTokenBase):
 	class Config:
 		include = {'fingerPrint'}
 
-class RefreshTokenRefreshRes(BaseModel):
+class RefreshTokenRefreshRes(MyBaseModelWithExcAndInc):
 	accessToken: str = Field(...)
 	refreshToken: str = Field(...)
 
-class RefreshTokenInDB(RefreshTokenBase):
+class RefreshTokenInDB(BaseModelWithId, RefreshTokenBase):
 	class Config(BaseModelWithIdConfig):
 		schema_extra = {
 		    'example': {

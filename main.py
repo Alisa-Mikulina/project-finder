@@ -15,11 +15,7 @@ from routers.UserRouter import userRouter
 from routers.AuthRouter import authRouter
 from routers.SkillTagRouter import skillTagRouter
 from routers.ProjectRouter import projectRouter
-<<<<<<< HEAD
 from routers.MatchRouter import matchRouter
-=======
-# from routers.MatchRouter import matchRouter
->>>>>>> da620e532d2ca7533bcc9217c1fc7767d0156df0
 
 app = FastAPI()
 

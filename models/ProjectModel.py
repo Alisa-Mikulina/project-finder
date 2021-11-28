@@ -10,6 +10,7 @@ class ProjectBase(BaseModel):
 	skillTags: List[SkillTagBase] = Field(min_items=1)
 	slug: str = Field(min_length=3, max_length=35)
 	user: UserBaseExtended
+	avatarUrl: str = Field(default='')
 	coverUrl: str = Field(default='')
 
 class ProjectBaseWithoutUser(BaseModel):
@@ -17,6 +18,7 @@ class ProjectBaseWithoutUser(BaseModel):
 	description: str = Field(min_length=20, max_length=500)
 	skillTags: List[SkillTagBase] = Field(min_items=1)
 	slug: str = Field(min_length=3, max_length=35)
+	avatarUrl: str = Field(default='')
 	coverUrl: str = Field(default='')
 
 class ProjectCreateReq(BaseModel):
@@ -41,6 +43,7 @@ class ProjectInDB(BaseModelWithId, ProjectBase):
 		        }],
 		        'slug': 'our_cool_project',
 		        'userId': 'ajkdjadjiadi2i13nankd',
+		        'avatarUrl': '/media/avatars/adwad.jpg',
 		        'coverUrl': '/media/avatars/adwadaw.jpg'
 		    }
 		}

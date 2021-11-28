@@ -15,7 +15,7 @@ from routers.UserRouter import userRouter
 from routers.AuthRouter import authRouter
 from routers.SkillTagRouter import skillTagRouter
 from routers.ProjectRouter import projectRouter
-# from routers.MatchRouter import matchRouter
+from routers.MatchRouter import matchRouter
 
 app = FastAPI()
 
@@ -49,7 +49,7 @@ app.include_router(userRouter, prefix='/api')
 app.include_router(authRouter, prefix='/api')
 app.include_router(skillTagRouter, prefix='/api')
 app.include_router(projectRouter, prefix='/api')
-# app.include_router(matchRouter, prefix='/api')
+app.include_router(matchRouter, prefix='/api')
 
 @app.get('/test')
 async def test_url():

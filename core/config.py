@@ -21,7 +21,7 @@ passwordDigits = set(string.digits)
 
 skillTagsJson = json.loads(open('./skillTags.json').read())
 
-allowdImageExtensions = set(('png', 'jpg', 'jpeg'))
+allowedImageExtensions = set(('png', 'jpg', 'jpeg'))
 
 class MyHTTPBearer(HTTPBearer):
 	def __init__(self):

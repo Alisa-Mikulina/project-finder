@@ -5,15 +5,10 @@ from core.config import pwdContext
 import aiofiles.os
 from fastapi import UploadFile
 
-from models.UserModel import UserChangeReq, UserInDB, UserRegisterReq
+from models.UserModel import UserSelfChangeReq, UserInDB, UserRegisterReq
 
-def getUserByUsername(db: Database, username: str) -> UserInDB:
+def getUserByUsername(db: Database, username: str):
 	user = db.users.find_one({'username': username})
-	if user:
-		return UserInDB(**user)
-
-def getUserById(db: Database, userId: str):
-	user = db.users.find_one({'_id': ObjectId(userId)})
 	if user:
 		return UserInDB(**user)
 
@@ -27,7 +22,7 @@ def createUser(db: Database, user: UserRegisterReq):
 	newUser = UserInDB(**{**user.dict(), 'passwordHash': hashedPassword})
 	db.users.insert_one(newUser.dict())
 
-def changeUser(db: Database, username: str, userChange: UserChangeReq):
+def changeUser(db: Database, username: str, userChange: UserSelfChangeReq):
 	user = db.users.find_one_and_update({'username': username}, {'$set': userChange.dict()})
 	return user
 

@@ -49,12 +49,14 @@ class UserChangeReq(BaseModel):
 	skillTags: Optional[List[SkillTagBase]] = []
 
 class UserRegisterRes(UserBaseExtended):
+	avatarUrl: str = Field(default='')
 	coverUrl: str = Field(default='')
 
 class UserListSuitableReq(BaseModel):
 	slug: str = Field(min_length=3, max_length=35)
 
 class UserInDB(BaseModelWithId, UserBaseExtended):
+	avatarUrl: str = Field(default='')
 	coverUrl: str = Field(default='')
 	passwordHash: str = Field(default='')
 
@@ -66,6 +68,7 @@ class UserInDB(BaseModelWithId, UserBaseExtended):
 		        'lastname': 'MyLastname',
 		        'contact': 'MyContact',
 		        'passwordHash': 'adhahduad123u1',
+		        'avatarUrl': '/media/avatars/adwada.jpg',
 		        'coverUrl': '/media/avatars/akdlakldklakl.jpeg'
 		    }
 		}

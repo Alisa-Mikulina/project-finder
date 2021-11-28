@@ -45,7 +45,7 @@ async def changeAvatar(user: UserInDB = Depends(getAuthorizedUser),
 	except:
 		await removeUserAvatar(db, user)
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Something went wrong')
-	return {'coverUrl': f'/media/avatars/{fileName}'}
+	return {'avatarUrl': f'/media/avatars/{fileName}'}
 
 @userRouter.get('/me', status_code=status.HTTP_200_OK, response_model=UserRegisterRes)
 async def selfInfo(user: UserInDB = Depends(getAuthorizedUser), db: Database = Depends(getDatabase)):

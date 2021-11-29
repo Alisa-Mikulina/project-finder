@@ -12,13 +12,13 @@ from controllers.UserController import getUserByUsername
 from uuid import uuid4
 from fastapi.security import HTTPAuthorizationCredentials
 
-def generateToken(db: Database, user: UserInDB, fingerPrint: str) -> str:
+def generateToken(db: Database, user: UserInDB, fingerPrint: str):
 	payload = {'username': user.username, 'exp': datetime.utcnow() + timedelta(minutes=int(ACCESS_TOKEN_EXP))}
 	accessToken = jwt.encode(payload, ACCESS_TOKEN_SECRET, 'HS256')
 	refreshTokenExpires = datetime.utcnow() + timedelta(hours=int(REFRESH_TOKEN_EXP))
 	refreshTokenInDB = RefreshTokenInDB(
 	    **{
-	        'userId': str(user.id),
+	        'username': str(user.username),
 	        'refreshToken': uuid4().hex,
 	        'expires': int(refreshTokenExpires.timestamp()),
 	        'fingerPrint': fingerPrint
@@ -31,12 +31,12 @@ def generateToken(db: Database, user: UserInDB, fingerPrint: str) -> str:
 	db.refreshTokens.insert_one(refreshTokenInDB.dict())
 	return [accessToken, refreshTokenInDB.refreshToken, refreshTokenExpires]
 
-def getRefreshTokenByUUID(refreshToken: str, db: Database = Depends(getDatabase)):
+def getRefreshTokenByValue(refreshToken: str, db: Database = Depends(getDatabase)):
 	refreshTokenInDB = db.refreshTokens.find_one({'refreshToken': refreshToken})
 	if refreshTokenInDB:
 		return RefreshTokenInDB(**refreshTokenInDB)
 
-def deleteRefreshTokenByUUID(refreshToken: str, db: Database = Depends(getDatabase)):
+def deleteRefreshTokenByValue(refreshToken: str, db: Database = Depends(getDatabase)):
 	db.refreshTokens.delete_one({'refreshToken': refreshToken})
 
 async def getAuthorizedUser(

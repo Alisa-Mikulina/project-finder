@@ -74,5 +74,13 @@ API_ERRORS = {
     'auth.NotAuthenticated': {
         'errorCode': 18,
         'msg': 'Not authenticated'
+    },
+    'skillTag.NotUnique': {
+        'errorCode': 19,
+        'msg': 'All skill tags must be unique'
+    },
+    'skillTag.Required': {
+        'errorCode': 20,
+        'msg': 'Minimum one skill tag need to be specified'
     }
 }

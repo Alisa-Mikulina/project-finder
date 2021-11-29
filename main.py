@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
-from fastapi.param_functions import Depends
+from fastapi.param_functions import Body, Depends
 from starlette.responses import JSONResponse
 from controllers.TokenController import getAuthorizedUser
 from core.config import HOST, PORT, DEV

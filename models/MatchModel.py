@@ -1,22 +1,23 @@
 from typing import List, Optional
+from fastapi.datastructures import Default
 from pydantic import BaseModel, Field, validator
 from models.BaseModel import BaseModelWithId, BaseModelWithIdConfig
 from models.UserModel import UserBaseExtended, UserInDB
 from models.ProjectModel import ProjectBaseWithoutUser, ProjectInDB
 
 class MatchBase(BaseModel):
-	username: UserBaseExtended.username
-	slug: ProjectBaseWithoutUser.slug
+	username: str
+	slug: str
 	likeFromUser: Optional[bool] = ()
 	likeFromProject: Optional[bool] = ()
 
 class MatchCreateReq(BaseModel):
-	username: UserBaseExtended.username
-	slug: ProjectBaseWithoutUser.slug
+	username: str
+	slug: str
 
 class MatchInDB(BaseModelWithId, MatchBase):
-	username: UserInDB.username
-	slug: ProjectInDB.slug
+	username: str
+	slug: str
 
 	class Config(BaseModelWithIdConfig):
 		schema_extra = {

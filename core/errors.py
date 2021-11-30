@@ -41,7 +41,7 @@ API_ERRORS = {
     },
     'password.WrongLength': {
         'errorCode': 10,
-        'msg': 'Password lenght must be beetween 8 and 50'
+        'msg': 'Password must contain at least 8 characters'
     },
     'project.AlreadyExists': {
         'errorCode': 11,
@@ -82,5 +82,13 @@ API_ERRORS = {
     'skillTag.Required': {
         'errorCode': 20,
         'msg': 'Minimum one skill tag need to be specified'
+    },
+    'username.ToShort': {
+        'errorCode': 21,
+        'msg': 'Username must contain at least 8 characters'
+    },
+    'password.WrongFormat': {
+        'errorCode': 22,
+        'msg': 'Wrong password format'
     }
 }

@@ -6,11 +6,11 @@ from models.SkillTagModel import SkillTagListRequired
 
 class ProjectBase(SkillTagListRequired):
 	title: str = Field(min_length=3, max_length=35)
-	description: Optional[str] = Field(default='', max_length=500)
+	description: str = Field(default='', max_length=500)
 	slug: str = Field(min_length=3, max_length=35)
 	user: UserBase
-	avatarUrl: Optional[str] = Field(default='')
-	coverUrl: Optional[str] = Field(default='')
+	avatarUrl: str = Field(default='')
+	coverUrl: str = Field(default='')
 
 class ProjectInDB(BaseModelWithId, ProjectBase):
 	class Config(BaseModelWithIdConfig):

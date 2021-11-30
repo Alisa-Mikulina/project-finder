@@ -1,6 +1,6 @@
 from fastapi import Header, UploadFile, File, HTTPException, status
 from pymongo.database import Database
-from core.config import allowedImageExtensions
+from core.config import allowedImageExtensions, uniqueSlugifyRegexp
 from slugify import slugify
 
 from core.errors import API_ERRORS
@@ -11,5 +11,5 @@ async def getImageFile(file: UploadFile = File(...), content_length: int = Heade
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=API_ERRORS['file.FileIsNotAnImage'])
 	return file
 
-def slugifyString(strToSlugify: str, lowercase: bool):
-	return slugify(strToSlugify, lowercase=lowercase, separator='_')
+def slugifyUniqueString(strToSlugify: str):
+	return slugify(strToSlugify, lowercase=False, regex_pattern=uniqueSlugifyRegexp)

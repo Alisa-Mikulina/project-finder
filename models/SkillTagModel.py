@@ -16,7 +16,7 @@ class SkillTagBase(MyBaseModelWithExcAndInc):
 		return label
 
 class SkillTagList(MyBaseModelWithExcAndInc):
-	skillTags: Optional[List[SkillTagBase]] = Field(default=[])
+	skillTags: List[SkillTagBase] = Field(default=[])
 
 	@validator('skillTags')
 	def checkSkillTags(cls, skillTags):

@@ -5,7 +5,7 @@ from pymongo.database import Database
 from controllers.ProjectController import createProject, getProjectBySlug, getProjectsBySkillTags, getSelfProjects, changeProject
 from controllers.TokenController import getAuthorizedUser
 from core.errors import API_ERRORS
-from core.utils import slugifyString
+from core.utils import slugifyUniqueString
 from db.mongodb import getDatabase
 from models.ProjectModel import *
 from models.UserModel import UserInDB
@@ -16,7 +16,7 @@ projectRouter = APIRouter(prefix='/project', tags=['project'])
 async def createProjectEP(project: ProjectCreateReq = Body(...),
                           user: UserInDB = Depends(getAuthorizedUser),
                           db: Database = Depends(getDatabase)):
-	slugTitle = slugifyString(project.title, True)
+	slugTitle = slugifyUniqueString(project.title)
 	predictProject = getProjectBySlug(db, slugTitle)
 	if predictProject:
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=API_ERRORS['project.AlreadyExists'])

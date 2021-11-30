@@ -7,6 +7,7 @@ from controllers.UserController import *
 from core.errors import API_ERRORS
 from controllers.UserController import checkPasswordHash
 from controllers.TokenController import generateToken
+from core.utils import slugifyUniqueString
 from db.mongodb import getDatabase
 from models.ProjectModel import UserListSuitableReq
 from models.UserModel import *
@@ -15,11 +16,12 @@ userRouter = APIRouter(prefix='/user', tags=['user'])
 
 @userRouter.post('/register', status_code=status.HTTP_201_CREATED, response_model=UserRegisterRes)
 async def registerUserEP(user: UserRegisterReq = Body(...), db: Database = Depends(getDatabase)):
-	predictUser = getUserByUsername(db, user.username)
+	slugUsername = slugifyUniqueString(user.username)
+	predictUser = getUserByUsername(db, slugUsername)
 	if predictUser:
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=API_ERRORS['user.AlreadyExists'])
-	createUser(db, user)
-	return getUserByUsername(db, user.username)
+	createUser(db, user, slugUsername)
+	return getUserByUsername(db, slugUsername)
 
 @userRouter.post('/login', status_code=status.HTTP_200_OK, response_model=UserLoginRes)
 async def loginUserEP(response: Response, user: UserLoginReq = Body(...),

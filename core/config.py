@@ -16,12 +16,13 @@ from core.errors import API_ERRORS
 load_dotenv()
 
 pwdContext = CryptContext(schemes=['bcrypt'], deprecated='auto')
-passwordUppercaseAlth = set(string.ascii_uppercase)
-passwordDigits = set(string.digits)
 
 skillTagsJson = json.loads(open('./skillTags.json').read())
 
 allowedImageExtensions = set(('png', 'jpg', 'jpeg'))
+
+uniqueSlugifyRegexp = r'[^-a-z0-9_]+'
+passwordValidationRegexp = r'^[a-zA-Z0-9!"#$%&\'()*+,-.\/:;<=>?@[\\\]\^_`{\|}~]+$'
 
 class MyHTTPBearer(HTTPBearer):
 	def __init__(self):

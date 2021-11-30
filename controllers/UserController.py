@@ -16,9 +16,9 @@ def getUsersBySkillTags(db: Database, username: str, skillTags: List[str]):
 	users = db.users.find({'skillTags.label': {'$in': skillTags}, 'username': {'$ne': username}})
 	return list(map(lambda ob: UserInDB(**ob), users))
 
-def createUser(db: Database, user: UserRegisterReq):
+def createUser(db: Database, user: UserRegisterReq, slugUsername: str):
 	hashedPassword = generatePasswordHash(user.password)
-	newUser = UserInDB(**{**user.dict(), 'passwordHash': hashedPassword})
+	newUser = UserInDB(**{**user.dict(), 'username': slugUsername, 'passwordHash': hashedPassword})
 	db.users.insert_one(newUser.dict())
 
 def changeUser(db: Database, username: str, userChange: UserSelfChangeReq):

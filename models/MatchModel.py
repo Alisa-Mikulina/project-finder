@@ -5,8 +5,8 @@ from models.BaseModel import BaseModelWithId, BaseModelWithIdConfig, MyBaseModel
 class MatchBase(MyBaseModelWithExcAndInc):
 	username: str
 	slug: str
-	likeFromUser: Optional[bool] = Field(default=False)
-	likeFromProject: Optional[bool] = Field(default=False)
+	likeFromUser: bool = Field(default=False)
+	likeFromProject: bool = Field(default=False)
 
 class MatchInDB(BaseModelWithId, MatchBase):
 	class Config(BaseModelWithIdConfig):

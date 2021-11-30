@@ -35,6 +35,7 @@ app.mount('/media', StaticFiles(directory='media'), name='media')
 
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(req, exc):
+	print('GOT', exc)
 	return JSONResponse([exc.detail], status_code=exc.status_code)
 
 @app.exception_handler(RequestValidationError)

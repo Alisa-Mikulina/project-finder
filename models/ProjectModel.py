@@ -7,6 +7,8 @@ from models.SkillTagModel import SkillTagListRequired
 class ProjectBase(SkillTagListRequired):
 	title: str = Field(min_length=3, max_length=35)
 	description: str = Field(default='', max_length=500)
+	location: str = Field(default='', max_length=35)
+	canRemote: bool = Field(default=False)
 	slug: str = Field(min_length=3, max_length=35)
 	user: UserBase
 	avatarUrl: str = Field(default='')
@@ -49,7 +51,7 @@ class ProjectInDB(BaseModelWithId, ProjectBase):
 # Project Create POST (/api/project/create)
 class ProjectCreateReq(ProjectBase):
 	class Config:
-		include = {'title', 'description', 'skillTags'}
+		include = {'title', 'description', 'skillTags', 'location', 'canRemote'}
 
 class ProjectChangeRes(ProjectBase):
 	pass
@@ -63,7 +65,7 @@ class ProjectMyRes(ProjectBase):
 
 class ProjectChangeMyReq(ProjectBase):
 	class Config:
-		include = {'description', 'skillTags'}
+		include = {'description', 'skillTags', 'location', 'canRemote'}
 
 class ProjectChangeMyRes(ProjectBase):
 	pass

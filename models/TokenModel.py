@@ -10,7 +10,7 @@ class RefreshTokenBase(UserUsername):
 
 # RefreshToken Refresh POST (/api/auth/refresh_token)
 class RefreshTokenRefreshReq(RefreshTokenBase):
-	refreshToken: Optional[str] = Field(default='')
+	refreshToken: str = Field(default='')
 
 	class Config:
 		include = {'fingerPrint'}

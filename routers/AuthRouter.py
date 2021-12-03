@@ -3,6 +3,7 @@ from fastapi import APIRouter, status, HTTPException, Depends, Body, Response, C
 from pymongo.database import Database
 from controllers.TokenController import deleteRefreshTokenByValue, generateToken, getRefreshTokenByValue
 from controllers.UserController import getUserByUsername
+from core.config import REFRESH_TOKEN_EXP
 from core.errors import API_ERRORS
 from db.mongodb import getDatabase
 from models.TokenModel import *
@@ -38,7 +39,6 @@ async def refreshTokenEP(response: Response,
 	accessToken, refreshToken, refreshTokenExpires = generateToken(db, userInDB, token.fingerPrint)
 	response.set_cookie(key='refreshToken',
 	                    value=refreshToken,
-	                    expires=refreshTokenExpires,
-	                    httponly=True,
-	                    path='/api/auth')
-	return {'accessToken': accessToken, 'refreshToken': refreshToken}
+	                    expires=int(REFRESH_TOKEN_EXP) * 60**2,
+	                    httponly=True)
+	return {'accessToken': accessToken, 'refreshToken': refreshToken, 'expires': refreshTokenExpires}

@@ -18,6 +18,7 @@ class RefreshTokenRefreshReq(RefreshTokenBase):
 class RefreshTokenRefreshRes(MyBaseModelWithExcAndInc):
 	accessToken: str = Field(...)
 	refreshToken: str = Field(...)
+	expires: int = Field(...)
 
 class RefreshTokenInDB(BaseModelWithId, RefreshTokenBase):
 	class Config(BaseModelWithIdConfig):

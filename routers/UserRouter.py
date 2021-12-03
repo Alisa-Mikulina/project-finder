@@ -4,6 +4,7 @@ from pymongo.database import Database
 from controllers.ProjectController import getProjectBySlug
 from controllers.TokenController import getAuthorizedUser
 from controllers.UserController import *
+from core.config import REFRESH_TOKEN_EXP
 from core.errors import API_ERRORS
 from controllers.UserController import checkPasswordHash
 from controllers.TokenController import generateToken
@@ -38,10 +39,9 @@ async def loginUserEP(response: Response, user: UserLoginReq = Body(...),
 	#TODO - Проверить параметры на безопасность после поднятия на сервере
 	response.set_cookie(key='refreshToken',
 	                    value=refreshToken,
-	                    expires=refreshTokenExpires,
-	                    httponly=True,
-	                    path='/api/auth')
-	return {'accessToken': accessToken, 'refreshToken': refreshToken}
+	                    expires=int(REFRESH_TOKEN_EXP) * 60**2,
+	                    httponly=True)
+	return {'accessToken': accessToken, 'refreshToken': refreshToken, 'expires': refreshTokenExpires}
 
 @userRouter.post('/list_suitable', status_code=status.HTTP_200_OK, response_model=List[UserListSuitableRes])
 def listSuitableEP(project: UserListSuitableReq = Body(...),

@@ -29,7 +29,7 @@ def generateToken(db: Database, user: UserInDB, fingerPrint: str):
 	if len(userTokens) >= int(JWT_MAX_TOKENS):
 		db.refreshTokens.delete_many({'userId': str(user.id)})
 	db.refreshTokens.insert_one(refreshTokenInDB.dict())
-	return [accessToken, refreshTokenInDB.refreshToken, refreshTokenExpires]
+	return [accessToken, refreshTokenInDB.refreshToken, int(refreshTokenExpires.timestamp())]
 
 def getRefreshTokenByValue(refreshToken: str, db: Database = Depends(getDatabase)):
 	refreshTokenInDB = db.refreshTokens.find_one({'refreshToken': refreshToken})

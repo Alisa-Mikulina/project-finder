@@ -80,6 +80,7 @@ class UserLoginReq(UserUsername, UserPassword):
 class UserLoginRes(MyBaseModelWithExcAndInc):
 	accessToken: str = Field(...)
 	refreshToken: str = Field(...)
+	expires: int = Field(...)
 
 # User Register POST (/api/user/register)
 class UserRegisterReq(UserBase, UserPassword):

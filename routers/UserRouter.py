@@ -44,14 +44,14 @@ async def loginUserEP(response: Response, user: UserLoginReq = Body(...),
 	return {'accessToken': accessToken, 'refreshToken': refreshToken, 'expires': refreshTokenExpires}
 
 @userRouter.post('/list_suitable', status_code=status.HTTP_200_OK, response_model=List[UserListSuitableRes])
-def listSuitableEP(project: UserListSuitableReq = Body(...),
+def listSuitableEP(req: UserListSuitableReq = Body(...),
                    user: UserInDB = Depends(getAuthorizedUser),
                    db: Database = Depends(getDatabase)):
-	project = getProjectBySlug(db, project.slug)
+	project = getProjectBySlug(db, req.slug)
 	if not project:
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=API_ERRORS['project.NotFound'])
 	projectSkillTags = list(map(lambda ob: ob['label'], project.dict()['skillTags']))
-	suitableUsers = getUsersBySkillTags(db, user.username, projectSkillTags)
+	suitableUsers = getUsersBySkillTags(db, user.username, projectSkillTags, req.skip, req.limit)
 	return suitableUsers
 
 # @userRouter.post('/avatar', status_code=status.HTTP_200_OK)

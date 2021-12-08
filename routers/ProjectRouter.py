@@ -28,12 +28,14 @@ async def listMyProjectsEP(user: UserInDB = Depends(getAuthorizedUser), db: Data
 	projects = getSelfProjects(db, user.username)
 	return projects
 
-@projectRouter.get('/list_suitable',
-                   status_code=status.HTTP_200_OK,
-                   response_model=List[ProjectListSuitableRes])
-async def listSuitableEP(user: UserInDB = Depends(getAuthorizedUser), db: Database = Depends(getDatabase)):
+@projectRouter.post('/list_suitable',
+                    status_code=status.HTTP_200_OK,
+                    response_model=List[ProjectListSuitableRes])
+async def listSuitableEP(req: ProjectListSuitableReq = Body(...),
+                         user: UserInDB = Depends(getAuthorizedUser),
+                         db: Database = Depends(getDatabase)):
 	userSkillTags = list(map(lambda ob: ob['label'], user.dict()['skillTags']))
-	suitableProject = getProjectsBySkillTags(db, user.username, userSkillTags)
+	suitableProject = getProjectsBySkillTags(db, user.username, userSkillTags, req.skip, req.limit)
 	return suitableProject
 
 @projectRouter.get('/{slug}', status_code=status.HTTP_200_OK, response_model=ProjectInfoRes)

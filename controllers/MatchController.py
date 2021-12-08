@@ -1,5 +1,6 @@
 from typing import List, Optional
 from pymongo.database import Database
+from controllers.ProjectController import getProjectBySlug
 from models.MatchModel import MatchInDB
 
 def getMatchByBoth(db: Database, username: str, slug: str):
@@ -14,29 +15,31 @@ def createOrUpdateMatch(db: Database,
                         likeFromUser: Optional[bool] = False,
                         likeFromProject: Optional[bool] = False):
 	predictMatch = getMatchByBoth(db, username, slug)
+	project = getProjectBySlug(db, slug)
 	if predictMatch:
 		db.matches.find_one_and_update({
 		    'username': username,
 		    'slug': slug
-		}, {'$set': {
-		    'likeFromUser': likeFromUser,
-		    'likeFromProject': likeFromProject
-		}})
+		}, {
+		    '$set': {
+		        'likeFromUser': likeFromUser or predictMatch.likeFromUser,
+		        'likeFromProject': likeFromProject or predictMatch.likeFromProject
+		    }
+		})
 		return
-	db.matches.insert_one({
+	match = db.matches.insert_one({
 	    'username': username,
 	    'slug': slug,
+	    'projectTitle': project.title,
 	    'likeFromUser': likeFromUser,
 	    'likeFromProject': likeFromProject
 	})
-	return
+	return MatchInDB(**match)
 
-# def getUserMatches(db: Database, username: str):
-# 	matches = db.matches.find({'username': username})
-# 	if matches:
-# 		return list(map(lambda ob: MatchInDB(**ob), matches))
+def getUserMatches(db: Database, username: str):
+	matches = db.matches.find({'username': username, 'likeFromUser': True, 'likeFromProject': True})
+	return list(map(lambda ob: MatchInDB(**ob), matches))
 
-# def getProjectMatches(db: Database, slug: str):
-# 	matches = db.matches.find({'slug': slug})
-# 	if matches:
-# 		return list(map(lambda ob: MatchInDB(**ob), matches))
+def getProjectMatches(db: Database, slug: str):
+	matches = db.matches.find({'slug': slug, 'likeFromUser': True, 'likeFromProject': True})
+	return list(map(lambda ob: MatchInDB(**ob), matches))

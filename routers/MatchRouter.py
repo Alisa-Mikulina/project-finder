@@ -11,7 +11,7 @@ from models.UserModel import UserInDB
 
 matchRouter = APIRouter(prefix='/match', tags=['match'])
 
-@matchRouter.post('/like_user', status_code=status.HTTP_201_CREATED, response_model=MatchLikeUserRes)
+@matchRouter.post('/like_user', status_code=status.HTTP_200_OK, response_model=MatchLikeUserRes)
 async def create(user: UserInDB = Depends(getAuthorizedUser),
                  match: MatchLikeUserReq = Body(...),
                  db: Database = Depends(getDatabase)):
@@ -29,7 +29,7 @@ async def create(user: UserInDB = Depends(getAuthorizedUser),
 	createOrUpdateMatch(db, match.username, match.slug, likeFromProject=True)
 	return {}
 
-@matchRouter.post('/like_project', status_code=status.HTTP_201_CREATED, response_model=MatchLikeProjectRes)
+@matchRouter.post('/like_project', status_code=status.HTTP_200_OK, response_model=MatchLikeProjectRes)
 async def create(user: UserInDB = Depends(getAuthorizedUser),
                  match: MatchLikeProjectReq = Body(...),
                  db: Database = Depends(getDatabase)):
@@ -40,13 +40,22 @@ async def create(user: UserInDB = Depends(getAuthorizedUser),
 	createOrUpdateMatch(db, user.username, match.slug, likeFromUser=True)
 	return {}
 
-# @matchRouter.get('/my_matches', status_code=status.HTTP_201_CREATED, response_model=List[MatchBase])
-# async def selfMatches(db: Database = Depends(getDatabase), user: UserInDB = Depends(getAuthorizedUser)):
-# 	matches = getUserMatches(db, user.username)
-# 	return matches
+@matchRouter.get('/my_matches', status_code=status.HTTP_200_OK, response_model=List[MatchGetSelfRes])
+async def selfMatches(user: UserInDB = Depends(getAuthorizedUser), db: Database = Depends(getDatabase)):
+	matches = getUserMatches(db, user.username)
+	return matches
 
-# @matchRouter.get('/my_project_matches', status_code=status.HTTP_201_CREATED, response_model=List[MatchBase])
-# async def myProjectMatches(db: Database = Depends(getDatabase),
-#                            project: ProjectInDB = Depends(getProjectBySlug)):
-# 	matches = getProjectMatches(db, project.slug)
-# 	return matches
+@matchRouter.post('/my_project_matches',
+                  status_code=status.HTTP_200_OK,
+                  response_model=List[MatchGetSelfProjectRes])
+async def myProjectMatches(req: MatchGetSelfProjectReq,
+                           user: UserInDB = Depends(getAuthorizedUser),
+                           db: Database = Depends(getDatabase)):
+	predictProject = getProjectBySlug(db, req.slug)
+	if not predictProject:
+		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=API_ERRORS['project.NotFound'])
+
+	if predictProject.user.username != user.username:
+		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=API_ERRORS['project.NoAccess'])
+	matches = getProjectMatches(db, req.slug)
+	return matches

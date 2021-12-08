@@ -21,7 +21,7 @@ skillTagsJson = json.loads(open('./skillTags.json').read())
 
 allowedImageExtensions = set(('png', 'jpg', 'jpeg'))
 
-uniqueSlugifyRegexp = r'[^-a-z0-9_]+'
+uniqueSlugifyRegexp = r'[^-a-zA-Z0-9_]+'
 passwordValidationRegexp = r'^[a-zA-Z0-9!"#$%&\'()*+,-.\/:;<=>?@[\\\]\^_`{\|}~]+$'
 
 class MyHTTPBearer(HTTPBearer):

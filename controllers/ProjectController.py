@@ -20,6 +20,31 @@ def changeProject(db: Database, slug: str, projectChange: ProjectChangeMyReq):
 	project = db.projects.find_one_and_update({'slug': slug}, {'$set': projectChange.dict()})
 	return project
 
-def getProjectsBySkillTags(db: Database, username: str, skillTags: List[str]):
-	projects = db.projects.find({'skillTags.label': {'$in': skillTags}, 'user.username': {'$ne': username}})
+def getProjectsBySkillTags(db: Database, username: str, skillTags: List[str], skip: int = 0, limit: int = 20):
+	projects = db.projects.aggregate([{
+	    '$match': {
+	        'skillTags.label': {
+	            '$in': skillTags
+	        },
+	        'user.username': {
+	            '$ne': username
+	        }
+	    }
+	}, {
+	    '$addFields': {
+	        '__order': {
+	            '$size': {
+	                '$setIntersection': ['$skillTags.label', skillTags]
+	            }
+	        }
+	    }
+	}, {
+	    '$sort': {
+	        '__order': -1
+	    }
+	}, {
+	    '$skip': skip,
+	}, {
+	    '$limit': limit
+	}])
 	return list(map(lambda ob: ProjectInDB(**ob), projects))

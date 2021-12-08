@@ -1,5 +1,6 @@
 from typing import Optional
 from pydantic import Field
+from pydantic.main import BaseModel
 from models.UserModel import UserBase
 from models.BaseModel import BaseModelWithId, BaseModelWithIdConfig
 from models.SkillTagModel import SkillTagListRequired
@@ -76,10 +77,18 @@ class ProjectInfoRes(ProjectBase):
 	pass
 
 # Project List Suitable GET (/api/project/list_suitable)
+
+class ProjectListSuitableReq(BaseModel):
+	skip: int = Field(default=0)
+	limit: int = Field(default=20)
+
 class ProjectListSuitableRes(ProjectBase):
 	pass
 
 # User List Suitable POST (/api/user/list_suitable)
 class UserListSuitableReq(ProjectBase):
+	limit: int = Field(default=20)
+	skip: int = Field(default=0)
+
 	class Config:
-		include = {'slug'}
+		include = {'slug', 'limit', 'skip'}

@@ -12,8 +12,33 @@ def getUserByUsername(db: Database, username: str):
 	if user:
 		return UserInDB(**user)
 
-def getUsersBySkillTags(db: Database, username: str, skillTags: List[str]):
-	users = db.users.find({'skillTags.label': {'$in': skillTags}, 'username': {'$ne': username}})
+def getUsersBySkillTags(db: Database, username: str, skillTags: List[str], skip: int = 0, limit: int = 20):
+	users = db.users.aggregate([{
+	    '$match': {
+	        'skillTags.label': {
+	            '$in': skillTags
+	        },
+	        'username': {
+	            '$ne': username
+	        }
+	    }
+	}, {
+	    '$addFields': {
+	        '__order': {
+	            '$size': {
+	                '$setIntersection': ['$skillTags.label', skillTags]
+	            }
+	        }
+	    }
+	}, {
+	    '$sort': {
+	        '__order': -1
+	    }
+	}, {
+	    '$skip': skip,
+	}, {
+	    '$limit': limit
+	}])
 	return list(map(lambda ob: UserInDB(**ob), users))
 
 def createUser(db: Database, user: UserRegisterReq, slugUsername: str):

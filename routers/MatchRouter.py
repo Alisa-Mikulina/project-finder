@@ -26,8 +26,8 @@ async def create(user: UserInDB = Depends(getAuthorizedUser),
 	if not predictUser:
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=API_ERRORS['user.NotFound'])
 
-	createOrUpdateMatch(db, match.username, match.slug, likeFromProject=True)
-	return {}
+	match = createOrUpdateMatch(db, match.username, match.slug, likeFromProject=True)
+	return match
 
 @matchRouter.post('/like_project', status_code=status.HTTP_200_OK, response_model=MatchLikeProjectRes)
 async def create(user: UserInDB = Depends(getAuthorizedUser),
@@ -37,8 +37,8 @@ async def create(user: UserInDB = Depends(getAuthorizedUser),
 	if not predictProject:
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=API_ERRORS['project.NotFound'])
 
-	createOrUpdateMatch(db, user.username, match.slug, likeFromUser=True)
-	return {}
+	match = createOrUpdateMatch(db, user.username, match.slug, likeFromUser=True)
+	return match
 
 @matchRouter.get('/my_matches', status_code=status.HTTP_200_OK, response_model=List[MatchGetSelfRes])
 async def selfMatches(user: UserInDB = Depends(getAuthorizedUser), db: Database = Depends(getDatabase)):

@@ -26,7 +26,7 @@ class MatchLikeUserReq(MatchBase):
 	class Config:
 		include = {'username', 'slug'}
 
-class MatchLikeUserRes(BaseModel):
+class MatchLikeUserRes(MatchBase):
 	pass
 
 # Match Project Like POST (/api/match/like_project)
@@ -34,7 +34,7 @@ class MatchLikeProjectReq(MatchBase):
 	class Config:
 		include = {'slug'}
 
-class MatchLikeProjectRes(BaseModel):
+class MatchLikeProjectRes(MatchBase):
 	pass
 
 # Get self mathces GET (/api/match/my_matches)

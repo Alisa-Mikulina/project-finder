@@ -37,7 +37,7 @@ class MatchLikeProjectReq(MatchBase):
 class MatchLikeProjectRes(MatchBase):
 	pass
 
-# Get self mathces GET (/api/match/my_matches)
+# Get all self matches GET (/api/match/self)
 
 class MatchGetSelfReq(BaseModel):
 	pass
@@ -46,7 +46,16 @@ class MatchGetSelfRes(MatchBase):
 	class Config:
 		include = {'username', 'slug', 'projectTitle'}
 
-# Get self project mathces POST (/api/match/my_project_matches)
+# Get self mathces as user GET (/api/match/self_user)
+
+class MatchGetSelfUserReq(BaseModel):
+	pass
+
+class MatchGetSelfUserRes(MatchBase):
+	class Config:
+		include = {'username', 'slug', 'projectTitle'}
+
+# Get self mathces as project POST (/api/match/self_project)
 
 class MatchGetSelfProjectReq(MatchBase):
 	class Config:

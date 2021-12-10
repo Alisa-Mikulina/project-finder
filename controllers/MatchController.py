@@ -1,6 +1,6 @@
 from typing import List, Optional
 from pymongo.database import Database
-from controllers.ProjectController import getProjectBySlug
+from controllers.ProjectController import getProjectBySlug, getSelfProjects
 from models.MatchModel import MatchInDB
 
 def getMatchByBoth(db: Database, username: str, slug: str):
@@ -35,6 +35,12 @@ def createOrUpdateMatch(db: Database,
 	    'likeFromProject': likeFromProject
 	})
 	return MatchInDB(**match)
+
+def getAllSelfMatches(db: Database, username: str):
+	selfProjectsSlug = list(map(lambda ob: ob.slug, getSelfProjects(db, username)))
+
+	matches = db.matches.find({'$or': [{'username': username}, {'slug': {'$in': selfProjectsSlug}}]})
+	return list(map(lambda ob: MatchInDB(**ob), matches))
 
 def getUserMatches(db: Database, username: str):
 	matches = db.matches.find({'username': username, 'likeFromUser': True, 'likeFromProject': True})

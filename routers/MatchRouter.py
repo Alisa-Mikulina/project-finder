@@ -40,12 +40,17 @@ async def create(user: UserInDB = Depends(getAuthorizedUser),
 	match = createOrUpdateMatch(db, user.username, match.slug, likeFromUser=True)
 	return match
 
-@matchRouter.get('/my_matches', status_code=status.HTTP_200_OK, response_model=List[MatchGetSelfRes])
+@matchRouter.get('/self', status_code=status.HTTP_200_OK, response_model=List[MatchGetSelfRes])
+async def selfMatches(user: UserInDB = Depends(getAuthorizedUser), db: Database = Depends(getDatabase)):
+	matches = getAllSelfMatches(db, user.username)
+	return matches
+
+@matchRouter.get('/self_user', status_code=status.HTTP_200_OK, response_model=List[MatchGetSelfUserRes])
 async def selfMatches(user: UserInDB = Depends(getAuthorizedUser), db: Database = Depends(getDatabase)):
 	matches = getUserMatches(db, user.username)
 	return matches
 
-@matchRouter.post('/my_project_matches',
+@matchRouter.post('/self_project',
                   status_code=status.HTTP_200_OK,
                   response_model=List[MatchGetSelfProjectRes])
 async def myProjectMatches(req: MatchGetSelfProjectReq,

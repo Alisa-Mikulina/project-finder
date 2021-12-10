@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 from pydantic import Field
 from pydantic.main import BaseModel
 from models.UserModel import UserBase
@@ -60,7 +60,8 @@ class ProjectChangeRes(ProjectBase):
 # Project My GET (/api/project/my)
 
 class ProjectMyRes(ProjectBase):
-	pass
+	class Config:
+		exclude = {'user'}
 
 # Project My POST (/api/project/my)
 
@@ -92,3 +93,8 @@ class UserListSuitableReq(ProjectBase):
 
 	class Config:
 		include = {'slug', 'limit', 'skip'}
+
+# User Me GET (/api/user/me)
+
+class UserSelfRes(UserBase):
+	projects: List[ProjectMyRes]

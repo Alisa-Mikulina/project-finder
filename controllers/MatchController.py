@@ -39,7 +39,17 @@ def createOrUpdateMatch(db: Database,
 def getAllSelfMatches(db: Database, username: str):
 	selfProjectsSlug = list(map(lambda ob: ob.slug, getSelfProjects(db, username)))
 
-	matches = db.matches.find({'$or': [{'username': username}, {'slug': {'$in': selfProjectsSlug}}]})
+	matches = db.matches.find({
+	    '$or': [{
+	        'username': username
+	    }, {
+	        'slug': {
+	            '$in': selfProjectsSlug
+	        }
+	    }],
+	    'likeFromUser': True,
+	    'likeFromProject': True
+	})
 	return list(map(lambda ob: MatchInDB(**ob), matches))
 
 def getUserMatches(db: Database, username: str):

@@ -13,7 +13,7 @@ class RefreshTokenRefreshReq(RefreshTokenBase):
 	refreshToken: str = Field(default='')
 
 	class Config:
-		include = {'fingerPrint'}
+		include = {'fingerPrint', 'refreshToken'}
 
 class RefreshTokenRefreshRes(MyBaseModelWithExcAndInc):
 	accessToken: str = Field(...)

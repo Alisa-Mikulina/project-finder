@@ -89,11 +89,6 @@ class UserRegisterReq(UserBase, UserPassword):
 class UserRegisterRes(UserBase):
 	pass
 
-# User Me GET (/api/user/me)
-
-class UserSelfRes(UserBase):
-	pass
-
 # User Me POST (/api/user/me)
 
 class UserSelfChangeReq(UserBase):

@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import APIRouter, status, HTTPException, Depends, Body, UploadFile, Response
 from pymongo.database import Database
-from controllers.ProjectController import getProjectBySlug
+from controllers.ProjectController import getProjectBySlug, getSelfProjects
 from controllers.TokenController import getAuthorizedUser
 from controllers.UserController import *
 from core.config import REFRESH_TOKEN_EXP
@@ -10,7 +10,7 @@ from controllers.UserController import checkPasswordHash
 from controllers.TokenController import generateToken
 from core.utils import slugifyUniqueString
 from db.mongodb import getDatabase
-from models.ProjectModel import UserListSuitableReq
+from models.ProjectModel import UserListSuitableReq, UserSelfRes
 from models.UserModel import *
 
 userRouter = APIRouter(prefix='/user', tags=['user'])
@@ -71,7 +71,8 @@ def listSuitableEP(req: UserListSuitableReq = Body(...),
 
 @userRouter.get('/me', status_code=status.HTTP_200_OK, response_model=UserSelfRes)
 async def getSelfInfoEP(user: UserInDB = Depends(getAuthorizedUser), db: Database = Depends(getDatabase)):
-	return user
+	projects = getSelfProjects(db, user.username)
+	return {**user.dict(), 'projects': projects}
 
 @userRouter.post('/me', status_code=status.HTTP_200_OK, response_model=UserSelfChangeRes)
 async def chnageSelfInfoEP(userChange: UserSelfChangeReq = Body(...),

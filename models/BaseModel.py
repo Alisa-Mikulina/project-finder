@@ -43,6 +43,16 @@ class MyBaseModelWithExcAndInc(BaseModel):
 			}
 		super().__init__(**data)
 
+def RegisterModelExcInc(cls):
+	excludeSet = cls.__config__.exclude
+	includeSet = cls.__config__.include
+	if excludeSet and includeSet:
+		raise Exception('Don\'t use exclude and include at the same time')
+	if excludeSet:
+		cls.__fields__ = {key: value for key, value in cls.__fields__.items() if key not in excludeSet}
+	if includeSet:
+		cls.__fields__ = {key: value for key, value in cls.__fields__.items() if key in includeSet}
+
 class BaseModelWithId(MyBaseModelWithExcAndInc):
 	id: Optional[PyObjectId] = Field(alias='_id')
 

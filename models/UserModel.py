@@ -5,7 +5,7 @@ from starlette import status
 from core.config import passwordValidationRegexp
 from core.errors import API_ERRORS
 from core.utils import slugifyUniqueString
-from models.BaseModel import BaseModelWithId, BaseModelWithIdConfig, MyBaseModelWithExcAndInc
+from models.BaseModel import BaseModelWithId, BaseModelWithIdConfig, MyBaseModelWithExcAndInc, RegisterModelExcInc
 from models.SkillTagModel import SkillTagList
 
 class UserUsername(MyBaseModelWithExcAndInc):
@@ -73,6 +73,8 @@ class UserInDB(BaseModelWithId, UserBase):
 		    }
 		}
 
+RegisterModelExcInc(UserInDB)
+
 # User Login POST (/api/user/login)
 class UserLoginReq(UserUsername, UserPassword):
 	fingerPrint: str = Field(...)
@@ -94,6 +96,8 @@ class UserRegisterRes(UserBase):
 class UserSelfChangeReq(UserBase):
 	class Config:
 		exclude = {'username', 'avatarUrl', 'coverUrl'}
+
+RegisterModelExcInc(UserSelfChangeReq)
 
 class UserSelfChangeRes(UserBase):
 	pass

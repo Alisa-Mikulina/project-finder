@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel, Field
-from models.BaseModel import BaseModelWithId, BaseModelWithIdConfig, MyBaseModelWithExcAndInc
+from models.BaseModel import BaseModelWithId, BaseModelWithIdConfig, MyBaseModelWithExcAndInc, RegisterModelExcInc
 
 class MatchBase(MyBaseModelWithExcAndInc):
 	username: str
@@ -26,6 +26,8 @@ class MatchLikeUserReq(MatchBase):
 	class Config:
 		include = {'username', 'slug'}
 
+RegisterModelExcInc(MatchLikeUserReq)
+
 class MatchLikeUserRes(MatchBase):
 	pass
 
@@ -33,6 +35,8 @@ class MatchLikeUserRes(MatchBase):
 class MatchLikeProjectReq(MatchBase):
 	class Config:
 		include = {'slug'}
+
+RegisterModelExcInc(MatchLikeProjectReq)
 
 class MatchLikeProjectRes(MatchBase):
 	pass
@@ -46,6 +50,8 @@ class MatchGetSelfRes(MatchBase):
 	class Config:
 		include = {'username', 'slug', 'projectTitle'}
 
+RegisterModelExcInc(MatchGetSelfRes)
+
 # Get self mathces as user GET (/api/match/self_user)
 
 class MatchGetSelfUserReq(BaseModel):
@@ -55,12 +61,18 @@ class MatchGetSelfUserRes(MatchBase):
 	class Config:
 		include = {'username', 'slug', 'projectTitle'}
 
+RegisterModelExcInc(MatchGetSelfUserRes)
+
 # Get self mathces as project POST (/api/match/self_project)
 
 class MatchGetSelfProjectReq(MatchBase):
 	class Config:
 		include = {'slug'}
 
+RegisterModelExcInc(MatchGetSelfProjectReq)
+
 class MatchGetSelfProjectRes(MatchBase):
 	class Config:
 		include = {'username', 'slug', 'projectTitle'}
+
+RegisterModelExcInc(MatchGetSelfProjectRes)

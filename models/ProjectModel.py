@@ -2,7 +2,7 @@ from typing import List, Optional
 from pydantic import Field
 from pydantic.main import BaseModel
 from models.UserModel import UserBase
-from models.BaseModel import BaseModelWithId, BaseModelWithIdConfig
+from models.BaseModel import BaseModelWithId, BaseModelWithIdConfig, RegisterModelExcInc
 from models.SkillTagModel import SkillTagListRequired
 
 class ProjectBase(SkillTagListRequired):
@@ -54,6 +54,8 @@ class ProjectCreateReq(ProjectBase):
 	class Config:
 		include = {'title', 'description', 'skillTags', 'location', 'canRemote'}
 
+RegisterModelExcInc(ProjectCreateReq)
+
 class ProjectChangeRes(ProjectBase):
 	pass
 
@@ -63,11 +65,15 @@ class ProjectMyRes(ProjectBase):
 	class Config:
 		exclude = {'user'}
 
+RegisterModelExcInc(ProjectMyRes)
+
 # Project My POST (/api/project/my)
 
 class ProjectChangeMyReq(ProjectBase):
 	class Config:
 		include = {'description', 'skillTags', 'location', 'canRemote'}
+
+RegisterModelExcInc(ProjectChangeMyReq)
 
 class ProjectChangeMyRes(ProjectBase):
 	pass
@@ -93,6 +99,8 @@ class UserListSuitableReq(ProjectBase):
 
 	class Config:
 		include = {'slug', 'limit', 'skip'}
+
+RegisterModelExcInc(UserListSuitableReq)
 
 # User Me GET (/api/user/me)
 

@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
+from fastapi.openapi.utils import get_flat_models_from_routes
 from fastapi.param_functions import Body, Depends
+from fastapi.utils import get_model_definitions
+from pydantic.schema import get_flat_models_from_model, get_model_name_map
 from starlette.responses import JSONResponse
 from controllers.TokenController import getAuthorizedUser
 from core.config import HOST, PORT, DEV

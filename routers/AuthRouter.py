@@ -35,7 +35,7 @@ async def refreshTokenEP(response: Response,
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
 		                    detail=API_ERRORS['auth.RefreshTokenExpired'])
 
-	userInDB = getUserByUsername(db=db, userId=refreshTokenInDB.username)
+	userInDB = getUserByUsername(db=db, username=refreshTokenInDB.username)
 	accessToken, refreshToken, refreshTokenExpires = generateToken(db, userInDB, token.fingerPrint)
 	response.set_cookie(key='refreshToken',
 	                    value=refreshToken,

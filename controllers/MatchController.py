@@ -27,13 +27,14 @@ def createOrUpdateMatch(db: Database,
 		    }
 		})
 		return
-	match = db.matches.insert_one({
+	db.matches.insert_one({
 	    'username': username,
 	    'slug': slug,
 	    'projectTitle': project.title,
 	    'likeFromUser': likeFromUser,
 	    'likeFromProject': likeFromProject
 	})
+	match = getMatchByBoth(db, username, slug)
 	return MatchInDB(**match)
 
 def getAllSelfMatches(db: Database, username: str):
